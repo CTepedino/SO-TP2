@@ -51,7 +51,7 @@ void exceptionDispatcher(int exception, uint64_t * RSP) {
     }
 
     RSP[15] = getSampleCodeModuleAddress();
-    RSP[18] = getStackBase();
+    RSP[18] = getStackBase() - 8 * 3;
 
 }
 
