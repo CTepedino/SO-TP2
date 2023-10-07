@@ -10,6 +10,7 @@ GLOBAL sys_putRectangle
 GLOBAL sys_putCircle
 GLOBAL sys_getCurrentKeyPress
 GLOBAL sys_getCurrentReleasedKeys
+GLOBAL sys_malloc
 
 section .text
 
@@ -55,6 +56,8 @@ sys_getRTC:
 sys_getREGS:
     systemcall 11
 
+sys_malloc:
+    systemcall 12
 
 
 

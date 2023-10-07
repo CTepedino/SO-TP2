@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdlib.h>
 #include <generalLib.h>
 #include <syscalls.h>
 #include <string.h>
@@ -105,4 +106,10 @@ void getCurrentReleasedKeys(char * rkeys){
 
 void sleep(uint64_t ticks){
     sys_sleep(ticks);
+}
+
+void * malloc(size_t n){
+    void * mem = NULL;
+    sys_malloc(n, mem);
+    return mem;
 }

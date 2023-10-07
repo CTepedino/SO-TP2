@@ -2,7 +2,7 @@
 #define SHELL_H
 
 #define READBUF_LENGTH 50
-#define COMMANDS_LENGTH 6
+#define COMMANDS_LENGTH 7
 #define TIME_LENGTH 9
 
 
@@ -11,4 +11,5 @@ void help();
 void regStatus();
 void shellStart();
 
+void testmm();
 #endif

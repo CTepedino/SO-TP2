@@ -9,7 +9,7 @@ unsigned int scr_width;
 unsigned int scr_height;
 
 
-const char* commands[] = {"help", "time", "dividebyzero", "invalidopcode", "regstatus", "pong",};
+const char* commands[] = {"help", "time", "dividebyzero", "invalidopcode", "regstatus", "pong", "testmm"};
 const char* commands_desc[] = {
         "Despliega una lista con los programas disponibles.\n",
         "Imprime en pantalla la fecha y hora del sistema.\n",
@@ -17,9 +17,10 @@ const char* commands_desc[] = {
         "Ejecuta un programa que intenta realizar una operacion invalida, causando una excepcion\n",
         "Imprime en pantalla el ultimo estado de los registros guardado.\n",
         "Abre el juego Pong. El paddle izquierdo se controla con \'W\' y \'S\'.El derecho con \'I\' y \'K\'.\n",
+        "Test para Memory Manager\n",
 };
 
-static void (*commands_functions[])() = {help, time, divideByZero, invalidOpCode, regStatus, pong};
+static void (*commands_functions[])() = {help, time, divideByZero, invalidOpCode, regStatus, pong, testmm};
 
 
 
@@ -107,6 +108,7 @@ static int indexCommand(char* readbuf) {
 
 
 void shellStart() {
+
     screenInfo(&scr_width, &scr_height);
     textPosition(0, scr_height);
 
@@ -130,3 +132,18 @@ void shellStart() {
         }
     }
 }
+
+char * fn_aux(){
+    char * aux = malloc(10);
+    for (int i = 0; i<9; i++){
+        aux[i]='a';
+    }
+    aux[9]=0;
+    return aux;
+}
+
+void testmm(){
+    char * aux = fn_aux();
+    print(aux);
+}
+
