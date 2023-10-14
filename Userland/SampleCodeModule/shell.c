@@ -134,7 +134,7 @@ void shellStart() {
 }
 
 char * fn_aux(){
-    char * aux = malloc(10);
+    char * aux = memAlloc(10);
     for (int i = 0; i<9; i++){
         aux[i]='a';
     }
@@ -145,5 +145,6 @@ char * fn_aux(){
 void testmm(){
     char * aux = fn_aux();
     print(aux);
+    memFree(aux);
 }
 

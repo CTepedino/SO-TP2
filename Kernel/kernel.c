@@ -19,8 +19,6 @@ static void * const sampleDataModuleAddress = (void*)0x500000;
 static void * const heapBaseAddress = (void*)0x600000;
 #define HEAP_SIZE (1024*1024*128)//128MB
 
-MemoryManagerADT memoryManager;
-
 typedef int (*EntryPoint)();
 
 
@@ -59,7 +57,7 @@ int main(){
 
     load_idt();
     setTimeFormat();
-    memoryManager = createMemoryManager(heapBaseAddress, (void*)HEAP_SIZE);
+    initializeMemoryManager(heapBaseAddress, (void*)HEAP_SIZE);
 
     ((EntryPoint) sampleCodeModuleAddress)();
     return 0;

@@ -11,6 +11,7 @@ GLOBAL sys_putCircle
 GLOBAL sys_getCurrentKeyPress
 GLOBAL sys_getCurrentReleasedKeys
 GLOBAL sys_malloc
+GLOBAL sys_free
 
 section .text
 
@@ -59,6 +60,8 @@ sys_getREGS:
 sys_malloc:
     systemcall 12
 
+sys_free:
+    systemcall 13
 
 
 

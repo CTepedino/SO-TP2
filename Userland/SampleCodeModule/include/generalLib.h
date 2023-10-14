@@ -2,6 +2,7 @@
 #define GENERALLIB_H
 
 #include <stdint.h>
+#include <stdlib.h>
 
 #define STDIN 0
 #define STDOUT 1
@@ -45,4 +46,7 @@ void clearScreen();
 void beep(uint8_t frequency, uint64_t ticks);
 
 void sleep(uint64_t ticks);
+
+void * memAlloc(size_t n);
+void memFree(void * ptr);
 #endif

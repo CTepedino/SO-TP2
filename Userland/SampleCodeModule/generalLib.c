@@ -108,8 +108,12 @@ void sleep(uint64_t ticks){
     sys_sleep(ticks);
 }
 
-void * malloc(size_t n){
+void * memAlloc(size_t n){
     void * mem = NULL;
     sys_malloc(n, mem);
     return mem;
+}
+
+void memFree(void * ptr){
+    sys_free(ptr);
 }
