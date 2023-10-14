@@ -99,7 +99,7 @@ static void sys_getREGS(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, 
 }
 
 static void sys_malloc(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
-     rsi = memAlloc( (size_t) rdi);
+     rsi = (uint64_t) memAlloc( (size_t) rdi);
 }
 
 static void sys_free(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){

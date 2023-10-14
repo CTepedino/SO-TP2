@@ -57,7 +57,7 @@ int main(){
 
     load_idt();
     setTimeFormat();
-    initializeMemoryManager(heapBaseAddress, (void*)HEAP_SIZE);
+    initializeMemoryManager(heapBaseAddress, HEAP_SIZE);
 
     ((EntryPoint) sampleCodeModuleAddress)();
     return 0;
