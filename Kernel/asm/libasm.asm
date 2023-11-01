@@ -1,6 +1,7 @@
 GLOBAL cpuVendor
 GLOBAL setTimeFormat
 GLOBAL getTime
+GLOBAL _xchg
 
 section .text
 	
@@ -56,3 +57,7 @@ getTime:
     pop rbp
     ret
 
+_xchg:
+	mov rax, rsi
+	xchg [rdi], eax
+	ret
