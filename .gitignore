@@ -1,0 +1,7 @@
+.bashrc
+.bash_history
+compile.sh
+clean.sh
+.gdbinit
+.gdb_history
+.vscode/
