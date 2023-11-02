@@ -49,4 +49,10 @@ void sleep(uint64_t ticks);
 
 void * memAlloc(size_t n);
 void memFree(void * ptr);
+
+int sem_open(unsigned int sem_id, unsigned int value);
+int sem_close(unsigned int sem_id);
+int sem_post(unsigned int sem_id);
+int sem_wait(unsigned int sem_id);
+
 #endif

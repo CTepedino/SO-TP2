@@ -117,3 +117,27 @@ void * memAlloc(size_t n){
 void memFree(void * ptr){
     sys_free(ptr);
 }
+
+int sem_open(unsigned int sem_id, unsigned int value){
+    int * toReturn;
+    sys_open_sem(sem_id, value, toReturn);
+    return &toReturn;
+}
+
+int sem_close(unsigned int sem_id){
+    int * toReturn;
+    sys_close_sem(sem_id, toReturn);
+    return &toReturn;
+}
+
+int sem_post(unsigned int sem_id){
+    int * toReturn;
+    sys_post_sem(sem_id, toReturn);
+    return &toReturn;
+}
+
+int sem_wait(unsigned int sem_id){
+    int * toReturn;
+    sys_wait_sem(sem_id, toReturn);
+    return &toReturn;
+}

@@ -18,4 +18,8 @@ void sys_getCurrentReleasedKeys(char * rkeys);
 void sys_sleep(uint64_t ticks);
 void sys_malloc(size_t n, void * mem);
 void sys_free(void * ptr);
+void sys_open_sem(unsigned int sem_id, unsigned int value, int * toReturn);
+void sys_close_sem(unsigned int sem_id, int * toReturn);
+void sys_post_sem(unsigned int sem_id, int * toReturn);
+void sys_wait_sem(unsigned int sem_id, int * toReturn);
 #endif

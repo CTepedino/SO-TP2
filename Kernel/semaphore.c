@@ -10,7 +10,6 @@ typedef struct sem_record{
 	unsigned int sem_value;
 	unsigned int lock;
 
-
 	queueADT queue;
 }sem_record;
 
@@ -57,20 +56,20 @@ void unlock(unsigned int * lock){
 }
 
 
-int create_sem_available(unsigned int value){
+int open_sem_available(unsigned int value){
 	int id = find_available_sem_id();
 
 	if(id == ERROR_NO_MORE_SPACE){
 		return ERROR_NO_MORE_SPACE;
 	}
 
-	if( create_sem(id, value) != SUCCESS){
+	if( open_sem(id, value) != SUCCESS){
 		return ERROR_NO_MORE_SPACE;
 	}
 	return id;
 }
 
-int create_sem(unsigned int sem_id, unsigned int value){
+int open_sem(unsigned int sem_id, unsigned int value){
 	if(sem_id == 0)
 		return INVALID_SEM_ID;
 	if(active_sem == MAX_SEMAPHORES)
@@ -96,10 +95,10 @@ int create_sem(unsigned int sem_id, unsigned int value){
 	return SUCCESS;
 }
 
-void destroy_sem(unsigned int sem_id){
+int close_sem(unsigned int sem_id){
 	int pos = find_sem(sem_id);
 	if(pos == INVALID_SEM_ID)
-		return;
+		return INVALID_SEM_ID;
 
 	lock(&(sem_info[pos].lock));
 	sem_info[pos].sem_id = 0;
@@ -108,9 +107,11 @@ void destroy_sem(unsigned int sem_id){
 	destroy_queue(&(sem_info[pos].queue));
 
 	unlock(&(sem_info[pos].lock));
+
+	return SUCCESS;
 }
 
-unsigned int wait_sem(unsigned int sem_id){
+int wait_sem(unsigned int sem_id){
 	int pos = find_sem(sem_id);
 	if(pos == INVALID_SEM_ID)
 		return INVALID_SEM_ID;
@@ -126,16 +127,16 @@ unsigned int wait_sem(unsigned int sem_id){
 
 		unlock(&(sem_info[pos].lock));
 		forceChangeTask();
-		return true;
+		return SUCCESS;
 	}
 
 
 	unlock(&(sem_info[pos].lock));
 
-	return true;
+	return SUCCESS;
 }
 
-unsigned int signal_sem(unsigned int sem_id){
+int post_sem(unsigned int sem_id){
 	int pos = find_sem(sem_id);
 	if(pos == INVALID_SEM_ID){
 		return INVALID_SEM_ID;
@@ -152,5 +153,5 @@ unsigned int signal_sem(unsigned int sem_id){
 	}
 
 	unlock(&(sem_info[pos].lock));
-	return true;
+	return SUCCESS;
 }

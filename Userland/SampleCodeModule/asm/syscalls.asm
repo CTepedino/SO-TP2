@@ -12,6 +12,10 @@ GLOBAL sys_getCurrentKeyPress
 GLOBAL sys_getCurrentReleasedKeys
 GLOBAL sys_malloc
 GLOBAL sys_free
+GLOBAL sys_open_sem
+GLOBAL sys_close_sem
+GLOBAL sys_post_sem
+GLOBAL sys_wait_sem
 
 section .text
 
@@ -63,7 +67,15 @@ sys_malloc:
 sys_free:
     systemcall 13
 
+sys_open_sem
+    systemcall 14
 
+sys_close_sem
+    systemcall 15
 
+sys_post_sem
+    systemcall 16 
 
+sys_wait_sem
+    systemcall 16 
 

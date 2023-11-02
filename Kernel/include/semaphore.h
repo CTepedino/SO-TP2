@@ -11,17 +11,16 @@
 
 //#include <multitasking.h>
 #include <queue.h>
-#include <stdbool.h>
 
 int _xchg(unsigned int * lock, int value);
 
 
-int create_sem_available(unsigned int value);
+int open_sem_available(unsigned int value);
 
-int create_sem(unsigned int sem_id, unsigned int value);
-void destroy_sem(unsigned int sem_id);
+int open_sem(unsigned int sem_id, unsigned int value);
+int close_sem(unsigned int sem_id);
 
-unsigned int signal_sem(unsigned int sem_id);
-unsigned int wait_sem(unsigned int sem_id);
+int post_sem(unsigned int sem_id);
+int wait_sem(unsigned int sem_id);
 
 #endif
