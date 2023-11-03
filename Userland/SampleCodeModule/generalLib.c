@@ -117,3 +117,7 @@ void * memAlloc(size_t n){
 void memFree(void * ptr){
     sys_free(ptr);
 }
+
+void memoryInfo(){
+    sys_memoryInfo();
+}

@@ -68,7 +68,7 @@ static void printERR(const char * message){
 }
 
 static void printREGS(uint64_t * RSP) {
-    char regBuffer[16];
+    char regBuffer[17];
 
    //registros generales
    for(int i=0; i<=14;i++){

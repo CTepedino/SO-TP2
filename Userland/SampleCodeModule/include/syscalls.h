@@ -18,4 +18,5 @@ void sys_getCurrentReleasedKeys(char * rkeys);
 void sys_sleep(uint64_t ticks);
 void sys_malloc(size_t n, void * mem);
 void sys_free(void * ptr);
+void sys_memoryInfo();
 #endif
