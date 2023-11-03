@@ -1,9 +1,11 @@
-#include "queue.h"
+#include <queue.h>
 #include <stddef.h>
 #include <stdint.h>
-#include "process.h"
+#include <process.h>
+#include <memoryManager.h>
+
 Queue newQueue(){
-    Queue queue = somalloc(sizeof(queue_t));
+    Queue queue = memAlloc(sizeof(queue_t));
         if(queue == NULL){
             return NULL;
         }
@@ -16,7 +18,7 @@ void enqueue(Queue queue,process p){
     if(queue == NULL|| p==NULL){
         return;
     }
-    Node node = somalloc(sizeof(node_t));
+    Node node = memAlloc(sizeof(node_t));
     if(node == NULL){
         return;
     }
@@ -30,10 +32,20 @@ void enqueue(Queue queue,process p){
         queue->last->next = node;
         queue->last = node;
     }
-
 }
 
-int dequeue(Queue queue,uint64_t pid){
+process dequeue(Queue queue){
+    if(queue == NULL || queue->first == NULL){
+        return -1;
+    }
+    Node aux = queue->first;
+    queue->first = aux->next;
+    process toReturn = aux->pcb;
+    memFree(aux);
+    return toReturn;
+}
+
+int remove(Queue queue,uint64_t pid){
     if(queue == NULL){
         return -1;
     }
@@ -50,15 +62,15 @@ int dequeue(Queue queue,uint64_t pid){
             if(aux->next == NULL){
                 queue->last = prev;
             }
-            free(aux);
+            memFree(aux);
             return 1;
         }
         prev = aux;
         aux = aux->next;
     }
     return -1;
-
 }
+
 process getProcessFromPid(Queue queue,uint64_t pid){
     if(queue == NULL||queue->first==NULL){
         return NULL;
@@ -71,4 +83,8 @@ process getProcessFromPid(Queue queue,uint64_t pid){
         aux = aux->next;
     }
     return NULL;
+}
+
+void destroyQueue(Queue queue){
+    free(queue);
 }

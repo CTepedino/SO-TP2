@@ -1,5 +1,6 @@
-#include <scheduler/process.h>
+#include <process.h>
 #include <stdint.h>
+
 typedef struct node_t{
     
     struct node_t *next;
@@ -12,9 +13,12 @@ typedef struct queue_t{
     Node last;
    
 } queue_t;
+
 typedef queue_t*Queue;
 
 Queue newQueue();
 void enqueue(Queue queue,process p);
-int dequeue(Queue queue,uint64_t pid);
+process dequeue(Queue queue);
+int remove(Queue queue,uint64_t pid);
 process getProcessFromPid(Queue queue,uint64_t pid);
+void destroyQueue(Queue queue);
