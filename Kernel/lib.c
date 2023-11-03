@@ -64,11 +64,25 @@ unsigned long strlen(const char * str){
 
 void intToString(uint64_t n, char * buffer, uint8_t base, uint8_t intLength) {;
     int aux;
+    buffer[intLength] = 0;
     for(int i=intLength-1; i>=0;i--){
         aux = n%base;
         buffer[i] = aux<10? '0'+aux : 'A'+aux-10;
         n/=base;
     }
+}
+
+uint32_t uIntLen(uint64_t num, uint8_t base){
+    uint32_t len=1;
+    while (num>=base){
+        num/=base;
+        len++;
+    }
+    return len;
+}
+
+void printString(const char * s){
+    write(1, s, strlen(s));
 }
 
 void saveREGS(uint64_t * RSP){

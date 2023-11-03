@@ -49,4 +49,5 @@ void sleep(uint64_t ticks);
 
 void * memAlloc(size_t n);
 void memFree(void * ptr);
+void memoryInfo();
 #endif

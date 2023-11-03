@@ -134,7 +134,10 @@ void shellStart() {
 }
 
 char * fn_aux(){
-    char * aux = memAlloc(10);
+    char * aux = memAlloc(80);
+    if (aux==NULL){
+        print("NULL\n");
+    }
     for (int i = 0; i<9; i++){
         aux[i]='a';
     }
@@ -143,8 +146,14 @@ char * fn_aux(){
 }
 
 void testmm(){
+    print("Memory before malloc:\n");
+    memoryInfo();
     char * aux = fn_aux();
     print(aux);
+    print("\nMemory after malloc:\n");
+    memoryInfo();
     memFree(aux);
+    print("Memory after free:\n");
+    memoryInfo();
 }
 

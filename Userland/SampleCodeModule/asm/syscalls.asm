@@ -12,6 +12,7 @@ GLOBAL sys_getCurrentKeyPress
 GLOBAL sys_getCurrentReleasedKeys
 GLOBAL sys_malloc
 GLOBAL sys_free
+GLOBAL sys_memoryInfo
 
 section .text
 
@@ -63,6 +64,8 @@ sys_malloc:
 sys_free:
     systemcall 13
 
+sys_memoryInfo:
+    systemcall 14
 
 
 
