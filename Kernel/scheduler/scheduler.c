@@ -1,8 +1,8 @@
-#include <include/scheduler.h> 
-#include <include/queue.h>
+#include <scheduler.h> 
+#include <queue.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <include/process.h>
+#include <process.h>
 
 Queue queue=NULL;
 
