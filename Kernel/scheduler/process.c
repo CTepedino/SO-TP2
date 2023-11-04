@@ -1,5 +1,5 @@
-#include <process.h>
-#include <queue.h>
+#include <include/process.h>
+#include <include/queue.h>
 #include <memoryManager.h>
 #include <lib.h>
 
