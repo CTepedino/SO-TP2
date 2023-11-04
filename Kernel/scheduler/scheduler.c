@@ -1,8 +1,8 @@
-#include <scheduler/scheduler.h> 
-#include <scheduler/queue.h>
+#include <scheduler.h> 
+#include <queue.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <scheduler/process.h>
+#include <process.h>
 
 Queue queue=NULL;
 
@@ -22,7 +22,7 @@ void blockProcessPid(uint64_t pid){
     if(p==NULL){
      return ;
     }
-    p->status=BLOCKED;
+    p->state=BLOCKED;
     if(pid==getRunningPid()){
         forceTimerTick();//ver
     }
@@ -38,6 +38,7 @@ int getRunningPid(){
 void yield(){
 
 forceTimerTick();
+
 }
 
 void unlockProcessPid(uint64_t pid){
@@ -45,10 +46,10 @@ void unlockProcessPid(uint64_t pid){
         return ;
     }
     process p=getProcessFromPid(queue,pid);
-    if(p==NULL||p->status==KILLED||p->status==READY){
+    if(p==NULL||p->state==KILLED||p->state==READY){
         return ;
     }
-    p->status=READY;
+    p->state=READY;
    return ;
 }
 
@@ -76,7 +77,7 @@ void killProcessPid(uint64_t pid){
     if(p==NULL){
         return ;
     }
-    p->status=KILLED;
+    p->state=KILLED;
     if(pid==getRunningPid()){
         forceTimerTick();
     }

@@ -21,6 +21,7 @@ unsigned long strlen(const char* str);
 void intToString(uint64_t n, char * buffer, uint8_t base, uint8_t intLength);
 void printString(const char * s);
 uint32_t uIntLen(uint64_t num, uint8_t base);
+char *strcpy(char *destination, char *source);
 
 void saveREGS(uint64_t * RSP);
 void getREGS(int * status, uint64_t * buffer);

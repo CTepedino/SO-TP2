@@ -45,6 +45,22 @@ process dequeue(Queue queue){
     return toReturn;
 }
 
+process dequeueReady(Queue queue){
+    if (queue == NULL || queue->first == NULL) {
+        return NULL;
+    }
+    while (queue->first->pcb->state != READY) {
+        queue->last = queue->first;
+        queue->first = queue->first->next;
+    }
+
+    process toReturn = queue->first->pcb;
+    queue->last = queue->first;
+    queue->first = queue->first->next;
+
+    return toReturn;
+}
+
 int remove(Queue queue,uint64_t pid){
     if(queue == NULL){
         return -1;
@@ -85,6 +101,22 @@ process getProcessFromPid(Queue queue,uint64_t pid){
     return NULL;
 }
 
+static void freeQueueRec(Node first){
+    if (first == NULL){
+        return;
+    }
+    freeQueueRec(first->next);
+    memFree(first);
+}
+
 void destroyQueue(Queue queue){
+    if (queue == NULL) {
+        return;
+    }
+    freeQueueRec(queue->first);
     free(queue);
+}
+
+int isEmpty(Queue queue){
+    return queue->first == NULL;
 }

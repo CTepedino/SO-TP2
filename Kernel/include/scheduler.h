@@ -1,3 +1,6 @@
+#include <stdint.h>
+#include <process.h>
+
 #define MAX_PRIORITY 8
 
 void initScheduler();
