@@ -5,6 +5,7 @@
 #include <memoryManager.h>
 #include <idtLoader.h>
 #include <math.h>
+#include <scheduler.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -59,6 +60,8 @@ int main(){
 
     load_idt();
     setTimeFormat();
+
+	initScheduler();
     
     initializeMemoryManager(heapBaseAddress, HEAP_SIZE);
 

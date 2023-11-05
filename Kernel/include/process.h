@@ -19,9 +19,8 @@ typedef struct process_t{
         uint8_t foreground;
         int fd[3];
         uint64_t waitingPid;
+        uint64_t tickets;
 
 }process_t;
 
 typedef process_t * process;
-
-process createProcess(char *name, uint64_t pid, int *fds, uint8_t priority, uint8_t foreground);

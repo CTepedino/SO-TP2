@@ -1,6 +1,7 @@
 GLOBAL _cli
 GLOBAL _sti
 GLOBAL _hlt
+GLOBAL _forceTimerInt
 GLOBAL picMasterMask
 GLOBAL picSlaveMask
 GLOBAL haltcpu
@@ -101,7 +102,9 @@ _sti:
 	sti
 	ret
 
-
+_forceTimerInt:
+	int 20h
+	ret
 
 
 picMasterMask:
