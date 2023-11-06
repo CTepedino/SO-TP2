@@ -15,6 +15,12 @@ void print(const char* string){
     sys_write(STDOUT, string, strlen(string));
 }
 
+void println(const char * string){
+    print(string);
+    putChar('\n');
+}
+
+
 void colorPrint(const char * string){
     sys_write(COLOR, string, strlen(string));
 }
@@ -59,6 +65,15 @@ void scan(char * buf, uint64_t length){
         }
     }
 }
+
+void printInt(uint64_t n){
+    uint32_t len = uIntLen(n, 10);
+    char buffer[len+1];
+    intToStringL(n, buffer, 10, len);
+    print(buffer);
+}
+
+
 
 
 

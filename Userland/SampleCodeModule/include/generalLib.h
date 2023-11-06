@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
+
 
 #define STDIN 0
 #define STDOUT 1
@@ -22,6 +24,8 @@ typedef struct timeStruct{
 void putChar(char c);
 void print(const char* string);
 void colorPrint(const char * string);
+void println(const char * string);
+void printInt(uint64_t n);
 
 void textPosition(uint32_t x, uint32_t y);
 void screenInfo(uint32_t * width, uint32_t * height);
