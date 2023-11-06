@@ -19,7 +19,7 @@
 #define BACKGROUND 0
 
 void initScheduler();
-uint64_t createProcess(uint64_t *entryPoint, int foreground, uint64_t fdIn, uint64_t fdOut,
+uint64_t createProcess(uint64_t *entryPoint, uint8_t foreground, uint64_t fdIn, uint64_t fdOut,
                            uint64_t first, uint64_t second, uint64_t third, char *name);
 uint64_t * contextSwitch(uint64_t *rsp);
 void blockProcessPid(uint64_t pid);
@@ -31,8 +31,8 @@ void switchStates(unsigned int pid);
 void killProcessPid(uint64_t pid);
 void changePriority(uint64_t pid, uint8_t priority);
 uint64_t getPid();
-int addWaitingPid(uint64_t pid);
-void exit();
+void addWaitingPid(uint64_t pid);
+void exitCurrentProcess();
 void printProcesses();
 void alter_process_state(uint64_t pid, uint8_t new_state);
 void alter_from_state(uint8_t old_state, uint8_t new_state);

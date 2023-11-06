@@ -24,4 +24,9 @@ void sys_nice(uint64_t pid, uint8_t priority);
 void sys_block(uint64_t pid);
 void sys_ps();
 uint64_t sys_getpid();
+uint64_t sys_createProcess(uint64_t *entryPoint, uint8_t foreground, uint64_t first, uint64_t second, uint64_t third, char *name);
+void sys_unblock(uint64_t pid);
+void sys_yield();
+void sys_waitPid(uint64_t pid);
+void sys_exit();
 #endif

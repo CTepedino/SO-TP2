@@ -18,6 +18,11 @@ GLOBAL sys_nice
 GLOBAL sys_block
 GLOBAL sys_ps
 GLOBAL sys_getpid
+GLOBAL sys_createProcess
+GLOBAL sys_unblock
+GLOBAL sys_yield
+GLOBAL sys_waitPid
+GLOBAL sys_exit
 
 section .text
 
@@ -79,7 +84,7 @@ sys_nice:
     systemcall 16
 
 sys_block:
-    systemacall 17
+    systemcall 17
 
 sys_ps: 
     systemcall 18
@@ -87,6 +92,17 @@ sys_ps:
 sys_getpid:
     systemcall 19
 
+sys_createProcess:
+    systemcall 20
 
+sys_unblock:
+    systemcall 21
 
+sys_yield:
+    systemcall 22
 
+sys_waitPid:
+    systemcall 23
+
+sys_exit:
+    systemcall 24
