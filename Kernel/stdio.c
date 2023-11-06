@@ -3,9 +3,13 @@
 void read(uint64_t fd, char *buffer, uint64_t length){
     if (fd==STDIN){
         for(int i=0;i<length;i++){
-            do {
-                buffer[i]=getKey();
-            } while(buffer[i]==0);
+            
+            while(buffer[i]==0){
+                alter_process_state(getPid(), AWAITING_INPUT);
+                yield();
+            }
+
+            buffer[i]=getKey();
         }
     }
 }

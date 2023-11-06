@@ -216,6 +216,16 @@ void printProcesses() {
     printQueue(queue);
 }
 
+void alter_process_state(uint64_t pid, uint8_t new_state){
+	process aux = getProcessFromPid(queue, pid);
+    if (aux != NULL){
+        aux->state = new_state;
+    }
+}
+
+void alter_from_state(uint8_t old_state, uint8_t new_state){
+    alter_state_if(queue, old_state, new_state);
+}
 
 
 

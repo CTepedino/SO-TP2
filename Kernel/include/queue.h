@@ -28,3 +28,4 @@ process getProcessFromPid(Queue queue,uint64_t pid);
 void destroyQueue(Queue queue);
 int isEmpty(Queue queue);
 void printQueue(Queue queue);
+void alter_state_if(Queue queue, uint8_t old_state, uint8_t new_state);

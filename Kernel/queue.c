@@ -132,7 +132,7 @@ void printQueue(Queue queue){
     char toPrintString[20] = {0};
     printString("PID         State    Prior    RSP                      RBP                      FG    Name\n");
     Node aux = queue->first;
-    while (aux != NULL) {
+    for(int i = 0; i < queue->size; i++, aux = aux->next) {
         //PID
         intToString(aux->pcb->pid, toPrintString, 10, uIntLen(aux->pcb->pid, 10));
         printString(toPrintString);
@@ -161,5 +161,14 @@ void printQueue(Queue queue){
         //Name
         printString(aux->pcb->name);
         printString("\n");
+    }
+}
+
+void alter_state_if(Queue queue, uint8_t old_state, uint8_t new_state){
+    Node aux = queue->first;
+    for(int i = 0; i < queue->size; i++, aux = aux->next){
+        if(aux->pcb->state == old_state){
+           aux->pcb->state = new_state; 
+        }
     }
 }

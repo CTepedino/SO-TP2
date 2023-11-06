@@ -5,6 +5,7 @@
 #include <defs.h>
 #include <videoDriver.h>
 #include <keyboardDriver.h>
+#include <scheduler.h>
 
 void read(uint64_t fd, char *buffer, uint64_t length);
 void write(uint64_t fd, const char * string, uint64_t count);
