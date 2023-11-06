@@ -33,7 +33,7 @@ static void sys_kill(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
 static void sys_nice(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 static void sys_block(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 static void sys_ps(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
-static void sys_getpid(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
+static uint64_t sys_getpid(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 static void (*syscalls[SYSCALL_COUNT])(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) = {
         sys_read,  sys_screenInfo, sys_textPosition, sys_getAllKeys, sys_getReleasedKeys, sys_write,sys_putRectangle,
         sys_putCircle ,sys_beep,sys_sleep, sys_getRTC, sys_getREGS, sys_malloc, sys_free, sys_memoryInfo, sys_kill, sys_nice, sys_block,sys_ps, 
@@ -118,17 +118,17 @@ static void sys_memoryInfo(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rc
     memoryInfo();
 }
 static void sys_kill(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
-   killProcessPid((int)rdi);
+   killProcessPid(rdi);
 }
 static void sys_nice(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
-   changePriority((int)rdi,(int)rsi);
+   changePriority(rdi, (uint8_t) rsi);
 }
 static void sys_block(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
-   blockProcessPid((int)rdi);
+   blockProcessPid(rdi);
 }
 static void sys_ps(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
    printProcesses();
 }
-static void sys_getpid(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
-   getPid();
+static uint64_t sys_getpid(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+   return getPid();
 }

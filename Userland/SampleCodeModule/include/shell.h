@@ -6,7 +6,7 @@
 #include <string.h>
 #include <pong.h>
 #include <exceptionTesters.h>
-#include <processes.h>
+#include <applications.h>
 
 #define READBUF_LENGTH 50
 #define COMMANDS_LENGTH 7

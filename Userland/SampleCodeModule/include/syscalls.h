@@ -19,4 +19,9 @@ void sys_sleep(uint64_t ticks);
 void sys_malloc(size_t n, void * mem);
 void sys_free(void * ptr);
 void sys_memoryInfo();
+void sys_kill(uint64_t pid);
+void sys_nice(uint64_t pid, uint8_t priority);
+void sys_block(uint64_t pid);
+void sys_ps();
+uint64_t sys_getpid();
 #endif

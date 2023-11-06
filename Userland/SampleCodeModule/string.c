@@ -97,3 +97,25 @@ void strcpy(const char * src, char * dst){
     }
     dst[i]=0;
 }
+
+int atoi(const char *str) {
+    int result = 0;
+    int sign = 1;
+
+    // Skip leading whitespaces
+    while (*str == ' ' || (*str >= '\t' && *str <= '\r')) {
+        str++;
+    }
+
+    // Check for sign
+    if (*str == '-' || *str == '+') {
+        sign = (*str++ == '-') ? -1 : 1;
+    }
+
+    // Convert digits to integer
+    while (*str >= '0' && *str <= '9') {
+        result = result * 10 + (*str++ - '0');
+    }
+
+    return result * sign;
+}
