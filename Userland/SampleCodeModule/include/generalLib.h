@@ -71,5 +71,8 @@ int sem_open(unsigned int sem_id, unsigned int value);
 int sem_close(unsigned int sem_id);
 int sem_post(unsigned int sem_id);
 int sem_wait(unsigned int sem_id);
-
+void wc(int argc, char *argv[]);
+void cat(int argc, char *argv[]);
+void filter(int argc, char *argv[]);
+void loop(int argc,char** argv);
 #endif

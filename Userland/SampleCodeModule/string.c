@@ -97,3 +97,24 @@ void strcpy(const char * src, char * dst){
     }
     dst[i]=0;
 }
+int isVowel(char letter)
+{
+
+        switch (letter) {
+        case 'a':
+        case 'e':
+        case 'i':
+        case 'o':
+        case 'u':
+        case 'A':
+        case 'E':
+        case 'I':
+        case 'O':
+        case 'U':
+                return 1;
+                break;
+
+        default:
+                return 0;
+        }
+}

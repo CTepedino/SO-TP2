@@ -13,6 +13,11 @@ GLOBAL sys_getCurrentReleasedKeys
 GLOBAL sys_malloc
 GLOBAL sys_free
 GLOBAL sys_memoryInfo
+GLOBAL sys_kill
+GLOBAL sys_nice
+GLOBAL sys_block
+GLOBAL sys_ps
+GLOBAL sys_getpid
 GLOBAL sys_addProcess
 GLOBAL sys_killProcess
 GLOBAL sys_killCurrentProcess
@@ -20,9 +25,9 @@ GLOBAL sys_getCurrentPid
 GLOBAL sys_setProcessPriority
 GLOBAL sys_blockProcess
 GLOBAL sys_unblockProcess
-GLOBAL sys_waitForChildren
+GLOBAL sys_waitForChildren 
 GLOBAL sys_yield
-GLOBAL sys_schedulerInfo
+GLOBAL sys_schedulerInfo  
 GLOBAL sys_open_sem
 GLOBAL sys_close_sem
 GLOBAL sys_post_sem
@@ -80,6 +85,16 @@ sys_free:
 
 sys_memoryInfo:
     systemcall 14
+sys_kill:
+    systemcall 15
+sys_nice:
+    systemcall 16
+sys_block:
+    systemacall 17
+sys_ps: 
+    systemcall 18
+sys_getpid:
+    systemcall 19
 
 sys_addProcess:
     systemcall 15

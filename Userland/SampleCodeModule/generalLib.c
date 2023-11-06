@@ -191,3 +191,41 @@ int sem_post(unsigned int sem_id){
 int sem_wait(unsigned int sem_id){
     return sys_wait_sem(sem_id);
 }
+
+void wc(int argc, char *argv[]) {
+  int lines = 0;
+  char c;
+  while ((c = getChar()) != 0) {
+    if (c == '\n') {
+      lines++;
+      
+    }
+  }
+  printf("Line count: %d\n", lines);
+  
+}
+
+void cat(int argc, char *argv[]) {
+  char c;
+  while ((c = getChar()) != 0)
+    putChar(c);
+  putChar('\n');
+}
+
+void filter(int argc, char *argv[]) {
+  char c;
+  while ((c = getChar()) != 0) {
+    if (!isVowel(c)) {
+      putChar(c);
+    }
+  }
+  putChar('\n');
+  return;
+}
+void loop(int argc,char** argv){
+    while(1){
+        printf("Hello! My pid is: %d\n", sys_getCurrentPid());
+        putChar('\n');
+    sleep(10); 
+    }
+}

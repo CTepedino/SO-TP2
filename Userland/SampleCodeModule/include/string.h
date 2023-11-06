@@ -1,8 +1,8 @@
 #ifndef STRING_H
 #define STRING_H
-
 #include <stdint.h>
 #include <stdlib.h>
+
 
 int strcmp(const char* str1, const char* str2);
 
@@ -19,5 +19,7 @@ void toUpper(char * buffer, const char * string);
 char * strtok(char * str, char delim);
 
 void strcpy(const char * src, char * dst);
+int isVowel(char letter);
+
 
 #endif

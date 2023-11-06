@@ -20,6 +20,15 @@ static Command commandList[] = {
         {"testprio", "(DEBUG)Test para prioridad de procesos", test_prio},
         {"testsync", "(DEBUG)Test para sincronizacion", test_sync},
         {"testargs", "(DEBUG)Imprime en pantalla argc y argv", argTest},
+        {"mem","Imprime el estado de la memoria",memoryInfo},
+        {"kill","Mata un proceso dado su ID.",kill},
+        {"nice","Cambia la prioridad de un proceso dado su ID y la nueva prioridad.",setPriority},
+        {"block"," Cambia el estado de un proceso entre bloqueado y listo dado su ID.",blockProcess},
+        {"ps"," Imprime la lista de todos los procesos con sus propiedades.",schedulerInfo},
+        {"loop","  Imprime su ID con un saludo cada una determinada cantidad de segundos.",loop},
+        {"wc","Cuenta la cantidad de lineas del input",wc},
+        {"cat","Imprime el stdin tal como lo recibe", cat},
+        {"filter","Filtra las vocales del input",filter}
 };
 
 
