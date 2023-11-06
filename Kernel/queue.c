@@ -8,6 +8,7 @@ Queue newQueue(){
     }
     queue->first = NULL;
     queue->last = NULL;
+    queue->size = 0;
     return queue;
 }
 
@@ -19,8 +20,7 @@ void enqueue(Queue queue,process p){
     if(node == NULL){
         return;
     }
-    node->pcb = p;
-    node->next = NULL;
+
     if(queue->first == NULL){
         queue->first = node;
         queue->last = node;
@@ -29,6 +29,9 @@ void enqueue(Queue queue,process p){
         queue->last->next = node;
         queue->last = node;
     }
+    node->pcb = p;
+    node->next = queue->first;
+    queue->size++;
 }
 
 process dequeue(Queue queue){
@@ -39,6 +42,7 @@ process dequeue(Queue queue){
     queue->first = aux->next;
     process toReturn = aux->pcb;
     memFree(aux->pcb);
+    queue->size--;
     return toReturn;
 }
 
@@ -46,9 +50,15 @@ process dequeueReady(Queue queue){
     if (queue == NULL || queue->first == NULL) {
         return NULL;
     }
-    while (queue->first->pcb->state != READY) {
+    
+    int i = 0;
+    for(; i < queue->size && queue->first->pcb->state != READY; i++) {
         queue->last = queue->first;
         queue->first = queue->first->next;
+    }
+
+    if(i == queue->size){
+        return NULL;
     }
 
     process toReturn = queue->first->pcb;

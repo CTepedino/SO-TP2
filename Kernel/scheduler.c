@@ -1,17 +1,28 @@
 #include <scheduler.h> 
 
 Queue queue = NULL;
-unsigned int pidCounter = 1;
+uint64_t pidCounter = 1;
 process currentProcess = NULL;
+uint64_t idleTaskPid;
 
 static void fillPCB(process pcb, uint64_t pid, uint64_t *base, int foreground,
                     uint64_t fdIn, uint64_t fdOut, char *name);
 
+static void idleTask(){
+	while(1)
+		_hlt();
+}
+
 void initScheduler(){
+
+    idleTaskPid = createProcess((uint64_t)&idleTask, BACKGROUND, FD_READ, FD_WRITE, "idle", NULL, NULL, "idle");
+
+    blockProcessPid(idleTaskPid);
+    
     queue = newQueue();
 }
 
-unsigned int createProcess(uint64_t *entryPoint, int foreground, uint64_t fdIn, uint64_t fdOut,
+uint64_t createProcess(uint64_t *entryPoint, int foreground, uint64_t fdIn, uint64_t fdOut,
                            uint64_t first, uint64_t second, uint64_t third, char *name) {
     uint64_t *base;
     if ((base = memAlloc(STACK_SIZE)) == NULL) {
@@ -67,7 +78,17 @@ uint64_t * contextSwitch(uint64_t *rsp) {
         currentProcess->tickets = currentProcess->priority;
     }
 
-    currentProcess = dequeueReady(queue);
+    process aux = dequeueReady(queue);
+
+    if(aux == NULL){
+        currentProcess = getProcessFromPid(queue, idleTaskPid);
+        unlockProcessPid(idleTaskPid);
+    }
+    else if(aux->pid != idleTaskPid){
+        currentProcess = aux;
+        blockProcessPid(idleTaskPid);
+    }
+
     currentProcess->tickets--;
     return currentProcess->rsp;
 }
@@ -117,6 +138,13 @@ void unlockProcessCurrent(){
     unlockProcessPid(currentProcess->pid);
 }
 
+void switchStates(unsigned int pid){
+    process aux;
+    if ((aux = getProcessFromPid(queue, pid)) != NULL) {
+        aux->state = aux->state == BLOCKED ? READY : BLOCKED;
+    }
+}
+
 void killProcessPid(uint64_t pid){
     if(queue==NULL|| queue->first==NULL){
         return ;
@@ -152,11 +180,11 @@ void changePriority(uint64_t pid, uint8_t priority){
     p->tickets = priority;
 }
 
-unsigned int getPid() {
+uint64_t getPid() {
     return currentProcess->pid;
 }
 
-int addWaitingPid(unsigned int pid) {
+int addWaitingPid(uint64_t pid) {
     process aux;
     if ((aux = getProcessFromPid(queue, pid)) != NULL) {
         aux->waitingPid = currentProcess->pid;

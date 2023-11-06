@@ -15,14 +15,17 @@
 #define START_CODE_SEGMENT 0x8
 #define MAX_PRIORITY 8
 #define MIN_PRIORITY 1
+#define FOREGROUND 1
+#define BACKGROUND 0
 
 void initScheduler();
-unsigned int createProcess(uint64_t *entryPoint, int foreground, uint64_t fdIn, uint64_t fdOut,
+uint64_t createProcess(uint64_t *entryPoint, int foreground, uint64_t fdIn, uint64_t fdOut,
                            uint64_t first, uint64_t second, uint64_t third, char *name);
 uint64_t * contextSwitch(uint64_t *rsp);
 void blockProcessPid(uint64_t pid);
 void yield();
 void unlockProcessPid(uint64_t pid);
+void switchStates(unsigned int pid);
 void blockProcessCurrent();
 void unlockProcessCurrent();
 void killProcessPid(uint64_t pid);

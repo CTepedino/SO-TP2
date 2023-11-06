@@ -14,6 +14,7 @@ typedef node_t*Node;
 typedef struct queue_t{
     Node first;
     Node last;
+    uint64_t size;
 } queue_t;
 
 typedef queue_t*Queue;
