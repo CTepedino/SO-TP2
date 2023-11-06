@@ -17,6 +17,11 @@ static Command commandList[] = {
         {"pong", "Abre el juego Pong. El paddle izquierdo se controla con \'W\' y \'S\'.El derecho con \'I\' y \'K\'.", pong},
         {"testmm", "(DEBUG)Test para memory manager", testmm},
         {"testargs", "(DEBUG)Imprime en pantalla argc y argv", argTest},
+        {"kill","Mata un proceso dado su ID.",killProcess},
+        {"nice","Cambia la prioridad de un proceso dado su ID y la nueva prioridad.",niceProcess},
+        {"block"," Cambia el estado de un proceso entre bloqueado y listo dado su ID.",blockProcess},
+        {"ps"," Imprime la lista de todos los procesos con sus propiedades.",ps},
+        {"loop","  Imprime su ID con un saludo cada una determinada cantidad de segundos.",loopProcess}
 };
 
 
