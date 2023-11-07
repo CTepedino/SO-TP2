@@ -15,7 +15,7 @@ static void idleTask(){
 
 void initScheduler(){
 
-    idleTaskPid = createProcess((uint64_t)&idleTask, BACKGROUND, FD_READ, FD_WRITE, "idle", NULL, NULL, "idle");
+    idleTaskPid = createProcess((uint64_t *)&idleTask, BACKGROUND, FD_READ, FD_WRITE, (uint64_t) "idle", (uint64_t) NULL, (uint64_t) NULL, "idle");
 
     blockProcessPid(idleTaskPid);
     
@@ -95,7 +95,7 @@ uint64_t * contextSwitch(uint64_t *rsp) {
 
 
 void blockProcessPid(uint64_t pid){
-    if(queue=NULL || queue->first==NULL){
+    if(queue==NULL || queue->first==NULL){
         return ;
     } 
     process p = getProcessFromPid(queue,pid);

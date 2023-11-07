@@ -9,7 +9,7 @@ typedef struct P_rq {
   enum State state;
 } p_rq;
 
-int64_t test_processes(uint64_t argc, char *argv[]) {
+void test_processes(int argc, char *argv[]) {
   uint8_t rq;
   uint8_t alive = 0;
   uint8_t action;
@@ -18,11 +18,11 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
 
   if (argc != 2){
     print("Usage: testprocesses <max_processes>\n");
-    return -1;
+    return;
   }
 
   if ((max_processes = satoi(argv[1])) <= 0)
-    return -1;
+    return;
 
   p_rq p_rqs[max_processes];
 
@@ -34,7 +34,7 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
 
       if (p_rqs[rq].pid == 0) {
         print("test_processes: ERROR creating process\n");
-        return -1;
+        return;
       } else {
         p_rqs[rq].state = RUNNING;
         alive++;

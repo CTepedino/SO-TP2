@@ -36,7 +36,7 @@ void enqueue(Queue queue,process p){
 
 process dequeue(Queue queue){
     if(queue == NULL || queue->first == NULL){
-        return -1;
+        return NULL;
     }
     Node aux = queue->first;
     queue->first = aux->next;
@@ -74,7 +74,7 @@ int remove(Queue queue,uint64_t pid){
     }
     Node aux = queue->first;
     Node prev = NULL;
-    while(aux->pcb != NULL){
+    while(aux != NULL){
         if(aux->pcb->pid == pid){
             if(prev == NULL){
                 queue->first = aux->next;
@@ -88,8 +88,8 @@ int remove(Queue queue,uint64_t pid){
             memFree(aux->pcb);
             return 1;
         }
-        prev = aux->pcb;
-        aux->pcb = aux->next;
+        prev = aux;
+        aux = aux->next;
     }
     return -1;
 }
@@ -99,11 +99,11 @@ process getProcessFromPid(Queue queue,uint64_t pid){
         return NULL;
     }
     Node aux = queue->first;
-    while(aux->pcb != NULL){
+    while(aux != NULL){
         if(aux->pcb->pid == pid){
             return aux->pcb;
         }
-        aux->pcb = aux->next;
+        aux = aux->next;
     }
     return NULL;
 }
@@ -146,13 +146,13 @@ void printQueue(Queue queue){
         printString(toPrintString);
         printString("        ");
         //RSP
-        intToString(aux->pcb->rsp, toPrintString, 16, uIntLen(aux->pcb->rsp, 16));
+        intToString(*aux->pcb->rsp, toPrintString, 16, uIntLen(*aux->pcb->rsp, 16));
         printString("0x");
         printString(toPrintString);
         printString("    ");
         //RBP
         printString("0x");
-        intToString(aux->pcb->rbp, toPrintString, 16, uIntLen(aux->pcb->rbp, 16));
+        intToString(*aux->pcb->rbp, toPrintString, 16, uIntLen(*aux->pcb->rbp, 16));
         printString(toPrintString);
         printString("    ");
         //FG
