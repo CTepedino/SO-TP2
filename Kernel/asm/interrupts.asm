@@ -165,7 +165,7 @@ _irq00Handler:
 	pushState
 
 	mov rdi, rsp
-	call contextSwitch ;Falta hacer en schedule.c
+	call contextSwitch ;causa problemas
 	mov rsp, rax
 
 	call timer_handler
@@ -210,11 +210,12 @@ _exception6Handler:
 
 
 ;System Calls
-_syscallHandler:
+_syscallHandler: ;Revisar systemcalls
 	push rax
-    pushStateNoRax
+    ;pushStateNoRax
     call syscallDispatcher
-    popStateNoRax
+	add rsp, 8
+    ;popStateNoRax
     iretq
 
 haltcpu:

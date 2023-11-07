@@ -59,10 +59,10 @@ int main(){
 
     load_idt();
     setTimeFormat();
-
-	initScheduler();
     
     initializeMemoryManager(heapBaseAddress, HEAP_SIZE);
+
+	initScheduler();
 
     ((EntryPoint) sampleCodeModuleAddress)();
     return 0;
