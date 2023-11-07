@@ -1,3 +1,6 @@
+#ifndef SCHEDULER_H
+#define SCHEDULER_H
+
 #include <stdint.h>
 #include <process.h>
 #include <queue.h>
@@ -36,3 +39,5 @@ void exitCurrentProcess();
 void printProcesses();
 void alter_process_state(uint64_t pid, uint8_t new_state);
 void alter_from_state(uint8_t old_state, uint8_t new_state);
+
+#endif
