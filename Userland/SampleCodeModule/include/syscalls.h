@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <generalLib.h>
 
 void sys_read(uint64_t fd, char *buf, uint64_t count);
 void sys_write(uint64_t fd, const char *buf, uint64_t count);

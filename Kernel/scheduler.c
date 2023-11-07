@@ -208,7 +208,7 @@ void exitCurrentProcess() {
     killProcessPid(getPid());
     currentProcess = NULL;
 
-    _forceInt();
+    _forceTimerInt();
 }
 
 void printProcesses() {

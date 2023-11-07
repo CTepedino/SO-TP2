@@ -1,3 +1,6 @@
+#ifndef QUEUE_H
+#define QUEUE_H
+
 #include <process.h>
 #include <stdint.h>
 #include <stddef.h>
@@ -29,3 +32,5 @@ void destroyQueue(Queue queue);
 int isEmpty(Queue queue);
 void printQueue(Queue queue);
 void alter_state_if(Queue queue, uint8_t old_state, uint8_t new_state);
+
+#endif

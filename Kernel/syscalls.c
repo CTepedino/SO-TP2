@@ -49,7 +49,7 @@ static void (*syscalls[SYSCALL_COUNT])(uint64_t rdi, uint64_t rsi, uint64_t rdx,
 
 void syscallDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t rax){
     if (rax < SYSCALL_COUNT) {
-        syscalls[rax](rdi, rsi, rdx, rcx, r8, r9);
+        syscalls[rax](rdi, rsi, rdx, rcx, r8, r9, rax);
     }
 }
 

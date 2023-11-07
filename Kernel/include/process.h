@@ -1,3 +1,6 @@
+#ifndef PROCESS_H
+#define PROCESS_H
+
 #include <stdint.h>
 #include <stddef.h>
 
@@ -25,3 +28,5 @@ typedef struct process_t{
 }process_t;
 
 typedef process_t * process;
+
+#endif

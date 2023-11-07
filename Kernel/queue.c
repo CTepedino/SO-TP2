@@ -121,7 +121,7 @@ void destroyQueue(Queue queue){
         return;
     }
     freeQueueRec(queue->first);
-    free(queue);
+    memFree(queue);
 }
 
 int isEmpty(Queue queue){
