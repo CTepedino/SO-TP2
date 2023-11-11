@@ -20,7 +20,7 @@ GLOBAL _syscallHandler
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
 EXTERN syscallDispatcher
-
+EXTERN contextSwitch
 
 SECTION .text
 
@@ -123,7 +123,8 @@ picSlaveMask:
 
 ;8254 Timer (Timer Tick)
 _irq00Handler:
-	irqHandlerMaster 0
+    irqHandlerMaster 0
+
 
 ;Keyboard
 _irq01Handler:

@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <lib.h>
 
+
 void initializeMemoryManager(void *initialAddress, uint64_t size);
 void * memAlloc(uint64_t size);
 void memFree(void * ptr);

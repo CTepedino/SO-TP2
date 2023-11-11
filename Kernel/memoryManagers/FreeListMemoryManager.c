@@ -2,106 +2,185 @@
 
 #include <memoryManager.h>
 
-#define FREE 0
-#define TAKEN 1
+typedef struct Header{
+	uint64_t size;
+    void * address;
+	struct Header * next;
+	struct Header * prev;
+} Header;
 
-typedef struct FreeListNode{
-    uint64_t blockSize;
-    uint8_t status;
-    struct FreeListNode * next;
-    struct FreeListNode * prev;
-} FreeListNode;
-
-
+Header * freeList;
+Header * takenList;
 uint64_t totalMem;
 uint64_t usedMem;
-FreeListNode * freeList;
 
-void split(FreeListNode * node, uint64_t offset);
-void merge(FreeListNode * node);
+void toTakenList(Header * header);
+void toFreeList(Header * header);
 
-void initializeMemoryManager(void *initialAddress, uint64_t size) {
-    totalMem = size;
-    freeList = (FreeListNode *) initialAddress;
-    freeList->blockSize = size - sizeof(FreeListNode);
+
+void initializeMemoryManager(void * initialAddress, uint64_t size){
+    freeList = (Header *) initialAddress;
+    freeList->size = size-sizeof(Header);
+    freeList->address = initialAddress;
     freeList->next = NULL;
     freeList->prev = NULL;
-    freeList->status = FREE;
+    totalMem = size-sizeof(Header);
 }
 
 void * memAlloc(uint64_t size){
-
     if (size==0){
         return NULL;
     }
-    FreeListNode * node = freeList;
-    while (node != NULL){
-        if (node->status==FREE) {
-            if (node->blockSize > size + sizeof(FreeListNode)) {
-                split(node, size);
+
+    Header * firstFit = freeList;
+
+    while(firstFit != NULL){
+        if (firstFit->size >= size+sizeof(Header)){
+            void * ptr =(void *) ((uint64_t)firstFit->address + firstFit->size - size);
+            firstFit->size -= (size+sizeof(Header));
+            if (firstFit->size == 0){
+                if (firstFit->prev != NULL){
+                    firstFit->prev->next = firstFit->next;
+                } else {
+                    freeList = firstFit->next;
+                }
+                if (firstFit->next != NULL){
+                    firstFit->next->prev = firstFit->prev;
+                }
             }
-            if (node->blockSize >= size) {
-                node->status = TAKEN;
-                usedMem += size;
-                return (void *) (node + sizeof(FreeListNode));
-            }
+            Header * taken = (Header *) ((uint64_t)ptr - sizeof(Header));
+            taken->address = ptr;
+            taken->size = size;
+            taken->next = NULL;
+            taken->prev = NULL;
+            toTakenList(taken);
+
+            usedMem += size + sizeof(Header);
+            return ptr;
         }
-        node = node->next;
+        firstFit = firstFit->next;
     }
     return NULL;
 }
 
 void memFree(void * ptr){
-
     if (ptr==NULL){
         return;
     }
-    FreeListNode * node = freeList;
-    while (node != NULL){
-        if (ptr == node + sizeof(FreeListNode)){
-            usedMem -= node->blockSize;
-            merge(ptr);
+    Header * toFree = takenList;
+    while(toFree != NULL){
+        if (toFree->address == ptr){
+            usedMem -= (toFree->size + sizeof(Header));
+            if (toFree->prev != NULL){
+                toFree->prev->next = toFree->next;
+            } else {
+                takenList = toFree->next;
+            }
+            if (toFree->next != NULL){
+                toFree->next->prev = toFree->prev;
+            }
+            toFreeList(toFree);
             return;
         }
-        node = node->next;
+        toFree = toFree->next;
     }
 }
 
 void memoryInfo(){
-    char buffer[400];
-    printString("Free List Memory Manager\nTotal Memory: ");
-    intToString(totalMem, buffer, 10, uIntLen(totalMem, 10));
-    printString(buffer);
-    printString("\nAvailable: ");
-    intToString(totalMem-usedMem, buffer, 10, uIntLen(totalMem-usedMem, 10));
-    printString(buffer);
-    printString("\nUsed: ");
-    intToString(usedMem, buffer, 10, uIntLen(usedMem, 10));
-    printString(buffer);
+    printString("Free List Memory Manager\n");
+    printString("Total: ");
+    printInt(totalMem);
+    printString("\nDisponible: ");
+    printInt(totalMem - usedMem);
+    printString("\nEn uso: ");
+    printInt(usedMem);
     printString("\n");
 }
 
-void split(FreeListNode * node, uint64_t offset){
-    FreeListNode * newNode = (FreeListNode *) (node + offset);
-    newNode->blockSize = node->blockSize - offset - sizeof(FreeListNode);
-    node->blockSize = offset;
-    newNode->status = FREE;
-    newNode->prev = node;
-    newNode->next = node->next;
-    node->next = newNode;
+
+void toTakenList(Header * header){
+
+    Header * curr = takenList;
+    Header * prev = NULL;
+    header->next = NULL;
+    header->prev = NULL;
+
+    if (curr == NULL){
+        takenList = header;
+    } else {
+        while(curr != NULL && curr < header){
+            prev = curr;
+            curr = curr->next;
+        }
+        if (curr==NULL){
+            if (prev != NULL){
+                prev->next = header;
+            }
+            header->prev = prev;
+        } else {
+            header->prev = prev;
+            if (prev != NULL){
+                prev->next = header;
+            } else {
+                takenList = header;
+            }
+            header->next = curr;
+            curr->prev = header;
+        }
+    }
 }
 
-void merge(FreeListNode * node){
-    FreeListNode * right = node->next;
-    if (right!=NULL && right->status==FREE){
-        node->next = right->next;
-        node->blockSize += sizeof(FreeListNode) + right->blockSize;
+void toFreeList(Header * header){
+
+    Header * curr = freeList;
+    Header * prev = NULL;
+    header->next = NULL;
+    header->prev = NULL;
+
+    if (curr==NULL){
+        freeList = header;
+    } else {
+        while(curr != NULL && curr < header){
+            prev = curr;
+            curr = curr->next;
+        }
+        if (curr==NULL){
+            if (prev != NULL){
+                prev->next = header;
+            }
+            header->prev = prev;
+            return;
+        }
+        header->prev = prev;
+        if (prev!= NULL){
+            prev->next = header;
+        } else {
+            freeList = header;
+        }
+        header->next = curr;
+        curr->prev = header;
+        Header * aux = header;
+        while (prev != NULL && (Header*)((uint64_t)prev->address+prev->size)==aux){
+            prev->size += aux->size + sizeof(Header);
+            prev->next = aux->next;
+            if (aux->next != NULL){
+                aux->next->prev = prev;
+            }
+            aux = prev;
+            prev = prev->prev;
+        }
+        while(aux->next != NULL && (Header*)((uint64_t)aux->address+aux->size)==aux->next){
+            aux->size += aux->next->size + sizeof(Header);
+            aux->next = aux->next->next;
+            if (aux->next != NULL){
+                aux->next->prev = aux;
+            }
+            aux = aux->next;
+        }
     }
-    FreeListNode * left = node->prev;
-    if (left!=NULL && left->status==FREE){
-        left->next = node->next;
-        left->blockSize += sizeof(FreeListNode) + node->blockSize;
-    }
+
 }
+
+
 
 #endif

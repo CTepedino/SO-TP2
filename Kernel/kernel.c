@@ -3,6 +3,7 @@
 #include <lib.h>
 #include <moduleLoader.h>
 #include <memoryManager.h>
+
 #include <idtLoader.h>
 #include <math.h>
 
@@ -18,8 +19,8 @@ static const uint64_t PageSize = 0x1000;
 static void * const sampleCodeModuleAddress = (void*)0x400000;
 static void * const sampleDataModuleAddress = (void*)0x500000;
 
-static void * const heapBaseAddress = (void*)0x600000;
-#define HEAP_SIZE 0x10000000
+#define HEAP_BASE_ADDRESS ((void*)0x700000)
+#define HEAP_SIZE (1024*1024*128)
 
 typedef int (*EntryPoint)();
 
@@ -57,11 +58,13 @@ void writeMatrix(uint32_t x, uint32_t y, uint32_t width, uint32_t height,const c
 
 int main(){
 
+    initializeMemoryManager(HEAP_BASE_ADDRESS, HEAP_SIZE);
+
+
     load_idt();
     setTimeFormat();
-    
-    initializeMemoryManager(heapBaseAddress, HEAP_SIZE);
 
     ((EntryPoint) sampleCodeModuleAddress)();
     return 0;
 }
+

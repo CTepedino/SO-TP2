@@ -1,5 +1,4 @@
 #ifdef BUDDY
-
 #include <memoryManager.h>
 
 #define MIN 5
@@ -8,108 +7,94 @@
 #define FREE 0
 #define TAKEN 1
 
-#define BLOCK_SIZE(i) (1<<(i))
-#define BUDDY_OF(b, i)  ((Head *)((uint64_t) base +  (((uint64_t)((void *)(b) - base)) ^ (1 << (i)))))
-#define HIDE_HEAD(b) ((void  *)(b) + sizeof(Head))
-#define SHOW_HEAD(m) ((Head *) ((m) - sizeof(Head)))
+#define BLOCK_SIZE(l) (1<<(l))
+#define BUDDY_OF(b)  ((Header *)((uint64_t) base +  (((uint64_t)((void *)(b) - base)) ^ (1 << (b->level)))))
+#define HIDE_HEADER(b) ((void  *)(b) + sizeof(Header))
+#define SHOW_HEADER(m) ((Header *) ((m) - sizeof(Header)))
 
-typedef struct Head{
-    uint8_t level;
-    uint8_t status;
-    struct Head * next;
-    struct Head * prev;
-} Head;
+typedef struct Header {
+	uint8_t level;
+	uint8_t status;
+	struct Header * prev;
+	struct Header * next;
+} Header;
 
 void * base;
 uint8_t max;
-Head * freeLists[LEVELS];
-
-uint64_t usedMem;
+Header * freeLists[LEVELS];
 uint64_t totalMem;
+uint64_t usedMem;
 
-
-uint8_t level(uint64_t size);
-Head * newHead(void * address, uint8_t level, Head *next);
-void freeListsRemove(Head * block);
+uint8_t getLevel(uint64_t size);
+Header *newHeader(void * address, uint8_t level, Header * next);
+void freeListsRemove(Header * header);
 void split(uint8_t idx);
-Head * merge(Head * block, Head * buddy);
+Header *merge(Header * block, Header * buddy);
 
-void initializeMemoryManager(void *initialAddress, uint64_t size) {
-    base = initialAddress;
-    max = level(size);
-    if (max < MIN){
-        return;
-    }
+
+void initializeMemoryManager(void *initialAddress, uint64_t size){
+	base = initialAddress;
+	max = getLevel(size);
     totalMem = size;
-    freeLists[max-1] = newHead(base, max, NULL);
+	freeLists[max - 1] = newHeader(base, max, NULL);
 }
 
-void * memAlloc(uint64_t size){
-    if (size==0){
+void * memAlloc(uint64_t size) {
+    uint8_t level = getLevel(size+sizeof(Header));
+    if (level < MIN-1){
+        level = MIN-1;
+    }
+    if (level >= max){
         return NULL;
     }
-    uint8_t targetLevel = level(size+sizeof(Head));
-    targetLevel = targetLevel < MIN-1 ? MIN - 1 : targetLevel;
-    if (targetLevel > max){
-        return NULL;
-    }
-    if (freeLists[targetLevel]==NULL){
-        uint8_t toSplit = targetLevel;
-        uint8_t found = 0;
-        while (!found){
-            toSplit++;
-            if (toSplit > max){
-                return NULL;
-            }
-            if (freeLists[toSplit] != NULL){
-                found=1;
-            }
+    uint8_t toSplit = level;
+    while(1){
+        if (toSplit>=max){
+            return NULL;
         }
-        while (toSplit>targetLevel) {
-            split(toSplit);
-            toSplit--;
+        if (freeLists[toSplit] != NULL){
+            break;
         }
+        toSplit++;
     }
-    Head * block = freeLists[targetLevel];
-    freeListsRemove(block);
-    block->status = TAKEN;
+    while(toSplit>level){
+        split(toSplit);
+        toSplit--;
+    }
+    Header *block = freeLists[level];
+	freeListsRemove(block);
+	block->status = TAKEN;
     usedMem += BLOCK_SIZE(block->level);
-    return HIDE_HEAD(block);
+    return HIDE_HEADER(block);
 }
 
-void memFree(void * ptr){
-    if (ptr == NULL){
+void memFree(void * ptr) {
+    if (ptr==NULL){
         return;
     }
-    Head * block = SHOW_HEAD(ptr);
-    if (block->status == FREE){
-        return;
-    }
+	Header * block = SHOW_HEADER(ptr);
+    block->status = FREE;
     usedMem -= BLOCK_SIZE(block->level);
-    Head * buddy = BUDDY_OF(block,block->level);
-    while (buddy->status == FREE && block->level < max){
+    for (Header * buddy = BUDDY_OF(block); buddy->status==FREE && buddy->level==block->level && block->level < max; buddy = BUDDY_OF(block)){
         block = merge(block, buddy);
-        buddy = BUDDY_OF(block, block->level);
     }
-    freeLists[block->level-1] = newHead((void *) block, block->level, freeLists[block->level-1]);
+	freeLists[block->level - 1] = newHeader(block, block->level, freeLists[block->level - 1]);
 }
 
 void memoryInfo(){
-    char buffer[400];
-    printString("Buddy Memory Manager\nTotal Memory: ");
-    intToString(totalMem, buffer, 10, uIntLen(totalMem, 10));
-    printString(buffer);
-    printString("\nAvailable: ");
-    intToString(totalMem-usedMem, buffer, 10, uIntLen(totalMem-usedMem, 10));
-    printString(buffer);
-    printString("\nUsed: ");
-    intToString(usedMem, buffer, 10, uIntLen(usedMem, 10));
-    printString(buffer);
+    printString("Buddy Memory Manager\n");
+    printString("Total: ");
+    printInt(totalMem);
+    printString("\nDisponible: ");
+    printInt(totalMem - usedMem);
+    printString("\nEn uso: ");
+    printInt(usedMem);
     printString("\n");
 }
 
 
-uint8_t level(uint64_t size){
+
+uint8_t getLevel(uint64_t size){
     uint8_t i = 0;
     while (size >>= 1){
         i++;
@@ -117,50 +102,42 @@ uint8_t level(uint64_t size){
     return i;
 }
 
-
-Head * newHead(void * address, uint8_t level, Head *next){
-    Head * block = (Head * ) address;
-    block->level = level;
-    block->status = FREE;
-    block->next = next;
-    block->prev = NULL;
-    if (next){
-        next->prev = block;
-    }
-    return block;
+Header * newHeader(void * address, uint8_t level, Header *next) {
+	Header * header = (Header *) address;
+	header->level = level;
+	header->status = FREE;
+	header->prev = NULL;
+	header->next = next;
+	if (next != NULL) {
+		next->prev = header;
+	}
+	return header;
 }
 
-void freeListsRemove(Head * block){
-    if (block->prev != NULL){
-        block->prev->next = block->next;
-    } else {
-        freeLists[block->level-1] = block->next;
+void freeListsRemove(Header * header) {
+	if (header->prev == NULL){
+        freeLists[header->level - 1] = header->next;
+    } else{
+		header->prev->next = header->next;
     }
-    if (block->next != NULL){
-        block->next->prev = block->prev;
+	if (header->next != NULL){
+		header->next->prev = header->prev;
     }
 }
 
-void split(uint8_t idx){
-    Head * block = freeLists[idx];
-    Head * buddy = BUDDY_OF(block, idx);
-    freeListsRemove(block);
-    newHead((void *) buddy, idx, freeLists[idx-1]);
-    freeLists[idx-1] = newHead((void *) block, idx, buddy);
+void split(uint8_t idx) {
+	Header *block = freeLists[idx];
+	freeListsRemove(block);
+	Header *buddy = (Header *) ((void*)block + (1 << idx));
+	newHeader(buddy, idx, freeLists[idx - 1]);
+	freeLists[idx - 1] = newHeader(block, idx, buddy);
 }
 
-Head * merge(Head * block, Head * buddy){
-    Head * primary,* secondary;
-    if (block < buddy){
-        primary = block;
-        secondary = buddy;
-    } else {
-        primary = buddy;
-        secondary = block;
-    }
-    freeListsRemove(secondary);
-    primary->level++;
-    return primary;
+Header * merge(Header *block, Header *buddy) {
+	freeListsRemove(buddy);
+	Header *blockStart = block < buddy ? block : buddy;
+	blockStart->level++;
+	return blockStart;
 }
 
 #endif
