@@ -4,8 +4,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-void sys_read(uint64_t fd, char *buf, uint64_t count);
-void sys_write(uint64_t fd, const char *buf, uint64_t count);
+void sys_read(uint64_t color, char *buf, uint64_t count);
+void sys_write(uint64_t color, const char *buf, uint64_t count);
 void sys_screenInfo(uint32_t * width, uint32_t * height);
 void sys_textPosition(uint32_t x, uint32_t y);
 void sys_getRTC(timeStruct * time);
@@ -19,7 +19,7 @@ void sys_sleep(uint64_t ticks);
 void * sys_malloc(size_t n);
 void sys_free(void * ptr);
 void sys_memoryInfo();
-uint64_t sys_addProcess(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority);
+uint64_t sys_addProcess(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority, unsigned int fds[]);
 void sys_killProcess(uint64_t pid);
 void sys_killCurrentProcess();
 uint64_t sys_getCurrentPid();
@@ -34,5 +34,11 @@ int sys_openSem(char * name, unsigned int value);
 void sys_closeSem(char * name);
 void sys_postSem(char * name);
 void sys_waitSem(char * name);
+
+int sys_create_pipe(unsigned int pipe_id);
+void sys_destroy_pipe(unsigned int pipe_id);
+int sys_read_from_pipe(unsigned int pipe_id, char * dest, unsigned int count);
+int sys_write_to_pipe(unsigned int pipe_id, const char * src, unsigned int count);
+void sys_signal_eof(unsigned int pipe_id);
 
 #endif

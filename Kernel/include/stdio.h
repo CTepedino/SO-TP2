@@ -6,9 +6,11 @@
 #include <videoDriver.h>
 #include <keyboardDriver.h>
 #include <scheduler.h>
+#include <process.h>
+#include <pipe.h>
 
-void read(uint64_t fd, char *buffer, uint64_t length);
-void write(uint64_t fd, const char * string, uint64_t count);
+void read(uint64_t color, char *buffer, uint64_t length);
+void write(uint64_t color, const char * string, uint64_t count);
 
 void screenInfo(uint32_t * width, uint32_t * height);
 

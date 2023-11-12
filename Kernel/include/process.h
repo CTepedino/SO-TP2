@@ -22,9 +22,12 @@ typedef struct Process{
     void * RBP;
     void * RSP;
     uint64_t childrenCount;
+    unsigned int input;
+    unsigned int output;
+    unsigned int foreground;
 } Process;
 
-Process * initializeProcess(uint64_t pid, uint64_t ppid, char * name, int argc, char ** argv, void (*program)(int argc, char ** argv));
+Process * initializeProcess(uint64_t pid, uint64_t ppid, char * name, int argc, char ** argv, void (*program)(int argc, char ** argv), unsigned int fds[]);
 void freeProcess(Process * process);
 
 

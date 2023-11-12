@@ -1,18 +1,23 @@
 #include <stdio.h>
 
-void read(uint64_t fd, char *buffer, uint64_t length){
-    if (fd==STDIN){
-        for(int i=0;i<length;i++){
-            do {
-                buffer[i]=getKey();
-            } while(buffer[i]==0);
+void read(uint64_t color, char *buffer, uint64_t length){
+    if (color==STDIN){
+        Process * current = getCurrentProcess();
+        if(current->input != STDIN){
+            read_from_pipe(current->input, buffer, length);
+        } else {
+            for(int i=0;i<length;i++){
+                do {
+                    buffer[i]=getKey();
+                } while(buffer[i]==0);
+            }
         }
     }
 }
 
-void write(uint64_t fd, const char * string, uint64_t count){
+void write(uint64_t color, const char * string, uint64_t count){
     uint32_t charColor;
-    switch(fd){
+    switch(color){
         case STDOUT:
             charColor = 0xFFFFFF;
             break;
@@ -25,8 +30,15 @@ void write(uint64_t fd, const char * string, uint64_t count){
         default:
             return;
     }
-    for(int i=0;i<count;i++){
-        putChar(charColor, 0, string[i]);
+    Process * current = getCurrentProcess();
+    if(current->output != STDOUT){
+        write_to_pipe(current->output, string, count);
+    } else {
+        if(current->foreground){
+            for(int i=0;i<count;i++){
+                putChar(charColor, 0, string[i]);
+            }
+        }
     }
 }
 

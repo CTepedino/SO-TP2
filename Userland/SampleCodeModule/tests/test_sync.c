@@ -1,7 +1,7 @@
 #include <test_util.h>
 
 #define SEM_ID "semTest"
-#define TOTAL_PAIR_PROCESSES 10
+#define TOTAL_PAIR_PROCESSES 2
 
 int64_t global; // shared memory
 
@@ -10,15 +10,12 @@ void slowInc(int64_t *p, int64_t inc) {
   yield(); // This makes the race condition highly probable
   aux += inc;
   *p = aux;
-  print("Inside decrease");
 }
 
 void my_process_inc(int argc, char *argv[]) {
   uint64_t n;
   int8_t inc;
   int8_t use_sem;
-
-  print("inside process");
 
   if (argc != 3)
     return;
@@ -59,13 +56,14 @@ void test_sync(int argc, char *argv[]) { //{n, use_sem, 0}
 
   char *argvDec[] = {argv[0], "-1", argv[1], NULL};
   char *argvInc[] = {argv[0], "1", argv[1], NULL};
+  unsigned int fds[2] = {STDIN, STDOUT};
 
   global = 0;
 
   uint64_t i;
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-    pids[i] = execve(&my_process_inc, "my_process_inc", 3, argvDec, 1);
-    pids[i + TOTAL_PAIR_PROCESSES] = execve(&my_process_inc, "my_process_inc", 3, argvInc, 1);
+    pids[i] = execve(&my_process_inc, "my_process_inc", 3, argvDec, 0, fds);
+    pids[i + TOTAL_PAIR_PROCESSES] = execve(&my_process_inc, "my_process_inc", 3, argvInc, 0, fds);
   }
 
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {

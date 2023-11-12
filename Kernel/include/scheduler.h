@@ -16,11 +16,12 @@
 void initializeScheduler();
 void * contextSwitch(void * RSP);
 
-uint64_t addProcess(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority);
+uint64_t addProcess(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority, unsigned int fds[]);
 void killProcess(uint64_t pid);
 void killCurrentProcess();
 
 uint64_t getCurrentPid();
+Process * getCurrentProcess();
 void setProcessPriority(uint64_t pid, uint8_t priority);
 void blockProcess(uint64_t pid);
 void unblockProcess(uint64_t pid);
