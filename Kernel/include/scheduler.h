@@ -7,6 +7,7 @@
 #include <lib.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <semaphore.h>
 
 #define MAX_PROCESS_COUNT 100
 #define PRIORITY_LEVELS 10

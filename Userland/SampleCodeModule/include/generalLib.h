@@ -67,9 +67,9 @@ void yield();
 void schedulerInfo();
 
 
-int sem_open(unsigned int sem_id, unsigned int value);
-int sem_close(unsigned int sem_id);
-int sem_post(unsigned int sem_id);
-int sem_wait(unsigned int sem_id);
+int semOpen(char * name, unsigned int value);
+void semClose(char * name);
+void semPost(char * name);
+void semWait(char * name);
 
 #endif

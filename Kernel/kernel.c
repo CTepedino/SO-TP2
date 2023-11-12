@@ -58,12 +58,15 @@ void * getSampleCodeModuleAddress(){
 
 void writeMatrix(uint32_t x, uint32_t y, uint32_t width, uint32_t height,const char matrix[height][width]);
 
+#include <semaphore.h>
+
+
 
 int main(){
 
     initializeMemoryManager(HEAP_BASE_ADDRESS, HEAP_SIZE);
-
     initializeScheduler();
+
     addProcess((EntryPoint)sampleCodeModuleAddress, "shell", 0, NULL, 0);
     load_idt();
     setTimeFormat();

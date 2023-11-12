@@ -30,9 +30,9 @@ void sys_waitForChildren(uint64_t pid);
 void sys_yield();
 void sys_schedulerInfo();
 
-int sys_open_sem(unsigned int sem_id, unsigned int value);
-int sys_close_sem(unsigned int sem_id);
-int sys_post_sem(unsigned int sem_id);
-int sys_wait_sem(unsigned int sem_id);
+int sys_openSem(char * name, unsigned int value);
+void sys_closeSem(char * name);
+void sys_postSem(char * name);
+void sys_waitSem(char * name);
 
 #endif

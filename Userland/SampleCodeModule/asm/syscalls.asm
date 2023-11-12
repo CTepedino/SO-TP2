@@ -23,10 +23,10 @@ GLOBAL sys_unblockProcess
 GLOBAL sys_waitForChildren
 GLOBAL sys_yield
 GLOBAL sys_schedulerInfo
-GLOBAL sys_open_sem
-GLOBAL sys_close_sem
-GLOBAL sys_post_sem
-GLOBAL sys_wait_sem
+GLOBAL sys_openSem
+GLOBAL sys_closeSem
+GLOBAL sys_postSem
+GLOBAL sys_waitSem
 
 section .text
 
@@ -111,15 +111,15 @@ sys_yield:
 sys_schedulerInfo:
     systemcall 24
     
-sys_open_sem:
+sys_openSem:
     systemcall 25
 
-sys_close_sem:
+sys_closeSem:
     systemcall 26
 
-sys_post_sem:
+sys_postSem:
     systemcall 27 
 
-sys_wait_sem:
+sys_waitSem:
     systemcall 28 
 

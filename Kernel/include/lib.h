@@ -17,13 +17,14 @@ typedef struct timeStruct{
 void * memset(void * destination, int32_t character, uint64_t length);
 void * memcpy(void * destination, const void * source, uint64_t length);
 
-
+int stringCompare(const char * s1, const char * s2);
 unsigned long strlen(const char* str);
 void intToString(uint64_t n, char * buffer, uint8_t base, uint8_t intLength);
 uint32_t uIntLen(uint64_t num, uint8_t base);
 void copyString(char * dst, char * src);
 void printString(const char * s);
 void printInt(uint64_t n);
+
 
 void saveREGS(uint64_t * RSP);
 void getREGS(int * status, uint64_t * buffer);
@@ -35,5 +36,7 @@ void getRTC(timeStruct * time);
 
 void forceTimerTick();
 void * initializeStack(void (*start)(void (*program)(int argc, char ** argv), int argc, char ** argv), void (* program)(int argc, char ** argv), void * rsp, int argc, char ** argv);
+
+int _xchg(int *lock, int value);
 
 #endif

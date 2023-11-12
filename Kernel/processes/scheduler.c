@@ -90,6 +90,7 @@ void killProcess(uint64_t pid){
     if (process==NULL){
         return;
     }
+    removeForAllSemaphores(pid);
     Process * parent = findProcess(process->ppid);
     if (parent != NULL){
         parent->childrenCount--;
