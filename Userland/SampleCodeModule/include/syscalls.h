@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 #include <stdlib.h>
-#include <generalLib.h>
 
 void sys_read(uint64_t fd, char *buf, uint64_t count);
 void sys_write(uint64_t fd, const char *buf, uint64_t count);
@@ -20,14 +19,15 @@ void sys_sleep(uint64_t ticks);
 void sys_malloc(size_t n, void * mem);
 void sys_free(void * ptr);
 void sys_memoryInfo();
-void sys_kill(uint64_t pid);
-void sys_nice(uint64_t pid, uint8_t priority);
-void sys_block(uint64_t pid);
-void sys_ps();
-uint64_t sys_getpid();
-uint64_t sys_createProcess(uint64_t *entryPoint, uint8_t foreground, uint64_t first, uint64_t second, uint64_t third, char *name);
-void sys_unblock(uint64_t pid);
+void sys_addProcess(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority);
+void sys_killProcess(uint64_t pid);
+void sys_killCurrentProcess();
+void sys_getCurrentPid(uint64_t * pid);
+void sys_setProcessPriority(uint64_t pid, uint64_t priority);
+void sys_blockProcess(uint64_t pid);
+void sys_unblockProcess(uint64_t pid);
+void sys_waitForChildren(uint64_t pid);
 void sys_yield();
-void sys_waitPid(uint64_t pid);
-void sys_exit();
+void sys_schedulerInfo();
+
 #endif

@@ -36,7 +36,6 @@ void keyboard_handler(uint64_t * RSP){
             }
             buffer[last++] = code;
             keyPressed = 1;
-            alter_from_state(AWAITING_INPUT, READY);
         }
     }
     else{

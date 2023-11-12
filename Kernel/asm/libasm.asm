@@ -1,6 +1,8 @@
 GLOBAL cpuVendor
 GLOBAL setTimeFormat
 GLOBAL getTime
+GLOBAL forceTimerTick
+GLOBAL initializeStack
 
 
 section .text
@@ -92,3 +94,25 @@ getTime:
     pop rbp
     ret
 
+forceTimerTick:
+    int 20h
+    ret
+
+initializeStack:
+	mov r14, rsp
+	mov r15, rbp
+	mov rsp, rdx
+	mov rbp, rdx
+	push 0x0
+	push rdx
+	push 0x202
+	push 0x8
+	push rdi
+	mov rdi, rsi
+	mov rsi, rcx
+	mov rdx, r8
+	pushState
+	mov rax, rsp
+	mov rsp, r14
+	mov rbp, r15
+	ret

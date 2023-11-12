@@ -2,31 +2,32 @@
 #define PROCESS_H
 
 #include <stdint.h>
-#include <stddef.h>
+#include <lib.h>
+#include <memoryManager.h>
+#include <scheduler.h>
+#include <interrupts.h>
+#include <processQueue.h>
 
-#define READY 1
-#define BLOCKED 2
-#define KILLED 3
-#define AWAITING_INPUT 4
-#define NAME 32
-#define FD_READ 0
-#define FD_WRITE 1
-#define FD_ERROR 2
+#define STACK_SIZE (1024*4)
 
-typedef struct process_t{
-        char name[NAME];
-        uint64_t pid;
-        uint8_t state;
-        uint8_t priority;
-        uint64_t *rsp;
-        uint64_t *rbp; 
-        uint8_t foreground;
-        int fd[3];
-        uint64_t waitingPid;
-        uint64_t tickets;
 
-}process_t;
+enum status {Ready=0, Running, Blocked, WaitingForChildren};
 
-typedef process_t * process;
+typedef struct Process{
+    uint64_t pid;
+    uint64_t ppid;
+    enum status status;
+    char * name;
+    char ** argv;
+    void * RBP;
+    void * RSP;
+    uint64_t childrenCount;
+} Process;
+
+Process * initializeProcess(uint64_t pid, uint64_t ppid, char * name, int argc, char ** argv, void (*program)(int argc, char ** argv));
+void freeProcess(Process * process);
+
+
 
 #endif
+

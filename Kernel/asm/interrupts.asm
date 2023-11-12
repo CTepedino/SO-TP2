@@ -1,7 +1,6 @@
 GLOBAL _cli
 GLOBAL _sti
 GLOBAL _hlt
-GLOBAL _forceTimerInt
 GLOBAL picMasterMask
 GLOBAL picSlaveMask
 GLOBAL haltcpu
@@ -21,9 +20,7 @@ GLOBAL _syscallHandler
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
 EXTERN syscallDispatcher
-EXTERN timer_handler
 EXTERN contextSwitch
-
 
 SECTION .text
 
@@ -62,6 +59,7 @@ SECTION .text
 	pop rbx
 	pop rax
 %endmacro
+
 
 %macro pushStateNoRax 0
 	push rbx
@@ -136,9 +134,7 @@ _sti:
 	sti
 	ret
 
-_forceTimerInt:
-	int 20h
-	ret
+
 
 
 picMasterMask:
@@ -164,19 +160,18 @@ picSlaveMask:
 _irq00Handler:
 	pushState
 
+	mov rdi, 0 ; pasaje de parametro
+	call irqDispatcher
+
 	mov rdi, rsp
-	call contextSwitch ;causa problemas
+	call contextSwitch
 	mov rsp, rax
 
-	call timer_handler
-
-	; signal pic EOI (End of Interrupt)
 	mov al, 20h
 	out 20h, al
 
 	popState
 	iretq
-
 
 ;Keyboard
 _irq01Handler:
@@ -211,12 +206,12 @@ _exception6Handler:
 
 
 ;System Calls
-_syscallHandler: ;Revisar systemcalls
-	push rax
-    ;pushStateNoRax
+_syscallHandler:
+    pushStateNoRax
+    push rax
     call syscallDispatcher
-	add rsp, 8
-    ;popStateNoRax
+    add rsp, 8
+    popStateNoRax
     iretq
 
 haltcpu:

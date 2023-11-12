@@ -20,6 +20,4 @@ char * strtok(char * str, char delim);
 
 void strcpy(const char * src, char * dst);
 
-int atoi(const char *str);
-
 #endif

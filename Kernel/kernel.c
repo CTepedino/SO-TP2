@@ -1,11 +1,14 @@
 #include <stdint.h>
+#include <string.h>
 #include <lib.h>
 #include <moduleLoader.h>
 #include <memoryManager.h>
 
+#include <scheduler.h>
+#include <process.h>
+
 #include <idtLoader.h>
 #include <math.h>
-#include <scheduler.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -22,8 +25,7 @@ static void * const sampleDataModuleAddress = (void*)0x500000;
 #define HEAP_BASE_ADDRESS ((void*)0x700000)
 #define HEAP_SIZE (1024*1024*128)
 
-typedef int (*EntryPoint)();
-
+typedef void (*EntryPoint)();
 
 void clearBSS(void * bssAddress, uint64_t bssSize)
 {
@@ -56,16 +58,16 @@ void * getSampleCodeModuleAddress(){
 
 void writeMatrix(uint32_t x, uint32_t y, uint32_t width, uint32_t height,const char matrix[height][width]);
 
+
 int main(){
 
     initializeMemoryManager(HEAP_BASE_ADDRESS, HEAP_SIZE);
 
-
+    initializeScheduler();
+    addProcess((EntryPoint)sampleCodeModuleAddress, "shell", 0, NULL, 0);
     load_idt();
     setTimeFormat();
-
-	initScheduler();
-
+    while(1);
     ((EntryPoint) sampleCodeModuleAddress)();
     return 0;
 }

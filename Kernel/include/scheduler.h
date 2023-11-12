@@ -1,43 +1,30 @@
 #ifndef SCHEDULER_H
 #define SCHEDULER_H
 
-#include <stdint.h>
 #include <process.h>
-#include <queue.h>
-#include <stddef.h>
+#include <processQueue.h>
 #include <memoryManager.h>
 #include <lib.h>
-#include <interrupts.h>
+#include <stdint.h>
+#include <stdlib.h>
 
+#define MAX_PROCESS_COUNT 100
+#define PRIORITY_LEVELS 10
+#define DUMMY_PID 0
 
-#define STACK_SIZE 0x8000
-#define REGISTER_AMOUNT 20
-#define GENERAL_REGISTER_AMOUNT 15
-#define START_STACK_SEGMENT 0x0
-#define START_RFLAGS 0x202
-#define START_CODE_SEGMENT 0x8
-#define MAX_PRIORITY 8
-#define MIN_PRIORITY 1
-#define FOREGROUND 1
-#define BACKGROUND 0
+void initializeScheduler();
+void * contextSwitch(void * RSP);
 
-void initScheduler();
-uint64_t createProcess(uint64_t *entryPoint, uint8_t foreground, uint64_t fdIn, uint64_t fdOut,
-                           uint64_t first, uint64_t second, uint64_t third, char *name);
-uint64_t * contextSwitch(uint64_t *rsp);
-void blockProcessPid(uint64_t pid);
+void addProcess(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority);
+void killProcess(uint64_t pid);
+void killCurrentProcess();
+
+uint64_t getCurrentPid();
+void setProcessPriority(uint64_t pid, uint8_t priority);
+void blockProcess(uint64_t pid);
+void unblockProcess(uint64_t pid);
+void waitForChildren(uint64_t pid);
 void yield();
-void unlockProcessPid(uint64_t pid);
-void blockProcessCurrent();
-void unlockProcessCurrent();
-void switchStates(unsigned int pid);
-void killProcessPid(uint64_t pid);
-void changePriority(uint64_t pid, uint8_t priority);
-uint64_t getPid();
-void addWaitingPid(uint64_t pid);
-void exitCurrentProcess();
-void printProcesses();
-void alter_process_state(uint64_t pid, uint8_t new_state);
-void alter_from_state(uint8_t old_state, uint8_t new_state);
 
+void schedulerInfo();
 #endif
