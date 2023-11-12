@@ -1,4 +1,4 @@
-/*#include <test_util.h>
+#include <test_util.h>
 
 // Random
 static uint32_t m_z = 362436069;
@@ -72,4 +72,14 @@ void endless_loop_print(uint64_t wait) {
     bussy_wait(wait);
   }
 }
-*/
+
+void * memset(void * destination, int32_t c, uint64_t length)
+{
+    uint8_t chr = (uint8_t)c;
+    char * dst = (char*)destination;
+
+    while(length--)
+        dst[length] = chr;
+
+    return destination;
+}

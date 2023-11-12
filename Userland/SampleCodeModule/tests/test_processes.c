@@ -1,4 +1,4 @@
-/*#include <test_util.h>
+#include <test_util.h>
 
 enum State { RUNNING,
              BLOCKED,
@@ -30,7 +30,8 @@ void test_processes(int argc, char *argv[]) {
 
     // Create max_processes processes
     for (rq = 0; rq < max_processes; rq++) {
-      p_rqs[rq].pid = sys_createProcess((uint64_t *) &endless_loop, 0, (uint64_t) argvAux[0], (uint64_t) NULL, (uint64_t) NULL, "endless_loop");
+      execve(&endless_loop, "endless_loop", 1, (char**) argvAux, 1);
+      p_rqs[rq].pid = getPid();
 
       if (p_rqs[rq].pid == 0) {
         print("test_processes: ERROR creating process\n");
@@ -50,7 +51,7 @@ void test_processes(int argc, char *argv[]) {
         switch (action) {
           case 0:
             if (p_rqs[rq].state == RUNNING || p_rqs[rq].state == BLOCKED) {
-              sys_kill(p_rqs[rq].pid);
+              kill(p_rqs[rq].pid);
               p_rqs[rq].state = KILLED;
               alive--;
             }
@@ -58,7 +59,7 @@ void test_processes(int argc, char *argv[]) {
 
           case 1:
             if (p_rqs[rq].state == RUNNING) {
-              sys_block(p_rqs[rq].pid);
+              blockProcess(p_rqs[rq].pid);
               p_rqs[rq].state = BLOCKED;
             }
             break;
@@ -68,10 +69,9 @@ void test_processes(int argc, char *argv[]) {
       // Randomly unblocks processes
       for (rq = 0; rq < max_processes; rq++)
         if (p_rqs[rq].state == BLOCKED && GetUniform(100) % 2) {
-          sys_unblock(p_rqs[rq].pid);
+          unblockProcess(p_rqs[rq].pid);
           p_rqs[rq].state = RUNNING;
         }
     }
   }
 }
-*/
