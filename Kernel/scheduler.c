@@ -63,7 +63,7 @@ static void fillPCB(process pcb, uint64_t pid, uint64_t *base, int foreground,
     pcb->fd[FD_WRITE] = fdOut;
     pcb->waitingPid = 0;
     pcb->name[0] = 0;
-    strcpy(pcb->name, name);
+    copyString(pcb->name, name);
 }
 
 uint64_t * contextSwitch(uint64_t *rsp) {
