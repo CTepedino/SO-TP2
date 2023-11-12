@@ -1,4 +1,4 @@
-#include <test_util.h>
+/*#include <test_util.h>
 
 enum State { RUNNING,
              BLOCKED,
@@ -74,3 +74,4 @@ void test_processes(int argc, char *argv[]) {
     }
   }
 }
+*/

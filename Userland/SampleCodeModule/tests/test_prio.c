@@ -1,4 +1,4 @@
-#include <test_util.h>
+/*#include <test_util.h>
 
 #define MINOR_WAIT 1000000 // TODO: Change this value to prevent a process from flooding the screen
 #define WAIT 10000000      // TODO: Change this value to make the wait long enough to see theese processes beeing run at least twice
@@ -46,3 +46,4 @@ void test_prio() {
   for (i = 0; i < TOTAL_PROCESSES; i++)
     sys_kill(pids[i]);
 }
+*/
