@@ -30,10 +30,10 @@ void sys_waitForChildren(uint64_t pid);
 void sys_yield();
 void sys_schedulerInfo();
 
-int sys_openSem(char * name, unsigned int value);
-void sys_closeSem(char * name);
-void sys_postSem(char * name);
-void sys_waitSem(char * name);
+int sys_openSem(int id, unsigned int value);
+void sys_closeSem(int id);
+void sys_postSem(int id);
+void sys_waitSem(int id);
 
 int sys_create_pipe(unsigned int pipe_id);
 void sys_destroy_pipe(unsigned int pipe_id);

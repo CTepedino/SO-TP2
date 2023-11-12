@@ -1,6 +1,6 @@
 #include <test_util.h>
 
-#define SEM_ID "semTest"
+#define SEM_ID 10
 #define TOTAL_PAIR_PROCESSES 2
 
 int64_t global; // shared memory

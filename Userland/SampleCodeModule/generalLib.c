@@ -176,18 +176,18 @@ void schedulerInfo(){
 }
 
 
-int semOpen(char * name, unsigned int value){
-    return sys_openSem(name, value);
+int semOpen(int id, unsigned int value){
+    return sys_openSem(id, value);
 }
 
-void semClose(char * name){
-    sys_closeSem(name);
+void semClose(int id){
+    sys_closeSem(id);
 }
 
-void semPost(char * name){
-    sys_postSem(name);
+void semPost(int id){
+    sys_postSem(id);
 }
 
-void semWait(char * name){
-    sys_waitSem(name);
+void semWait(int id){
+    sys_waitSem(id);
 }

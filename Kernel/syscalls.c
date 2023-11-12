@@ -202,21 +202,21 @@ static int sys_schedulerInfo(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t 
 }
 
 static int sys_openSem(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
-    return openSem((char*)rdi, rsi);
+    return openSem(rdi, rsi);
 }
 
 static int sys_closeSem(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
-    closeSem((char*)rdi);
+    closeSem(rdi);
     return 0;
 }
 
 static int sys_postSem(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
-    postSem((char*)rdi);
+    postSem(rdi);
     return 0;
 }
 
 static int sys_waitSem(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
-    waitSem((char*)rdi);
+    waitSem(rdi);
     return 0;
 }
 

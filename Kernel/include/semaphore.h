@@ -9,11 +9,12 @@
 #define MAX_SEMAPHORES 50
 
 
-int openSem(char * name, unsigned int value);
-void closeSem(char * name);
+int openSem(int id, unsigned int value);
+int openNewSem(unsigned int value);
+void closeSem(int id);
 
-void postSem(char * name);
-void waitSem(char * name);
+void postSem(int id);
+void waitSem(int id);
 
 void removeForAllSemaphores(uint64_t pid);
 

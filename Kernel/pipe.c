@@ -2,7 +2,8 @@
 
 #define MAX_PIPES 20
 #define PIPE_SIZE 1024
-
+#define ERROR_NO_MORE_SPACE -3
+#define SUCCESS 0
 typedef struct pipe_record{
 	unsigned int pipe_id;
 
@@ -81,18 +82,16 @@ int create_pipe(unsigned int pipe_id){
 	}
 
 	
-	int sem_id1 = open_sem_available(0);
-	int sem_id2 = open_sem_available(PIPE_SIZE);
-	if(sem_id1 == INVALID_SEM_ID || sem_id2 == INVALID_SEM_ID){
-		close_sem(sem_id1);
-		close_sem(sem_id2);
+	int sem_id1 = openNewSem(0);
+	int sem_id2 = openNewSem(PIPE_SIZE);
+	if(sem_id1 == -1|| sem_id2 == -1){
 		return ERROR_NO_MORE_SPACE;
 	}
 	
 	pipe_info[freePos].pipe = memAlloc(PIPE_SIZE);
 	if(pipe_info[freePos].pipe == NULL){
-		close_sem(sem_id1);
-		close_sem(sem_id2);
+		closeSem(sem_id1);
+		closeSem(sem_id2);
 		return ERROR_NO_MORE_SPACE;
 	}
 
@@ -114,8 +113,8 @@ void destroy_pipe(unsigned int pipe_id){
 	int pos = find_pipe(pipe_id);
 	if(pos == INVALID_PIPE_ID)
 		return;
-	close_sem(pipe_info[pos].write_sem_id);	
-	close_sem(pipe_info[pos].read_sem_id);
+	closeSem(pipe_info[pos].write_sem_id);
+	closeSem(pipe_info[pos].read_sem_id);
 	memFree(pipe_info[pos].pipe);
 
 	pipe_info[pos].read_sem_id  = 0;
@@ -146,13 +145,13 @@ int write_to_pipe(unsigned int pipe_id, const char * src, unsigned int count){
 		return INVALID_PIPE_ID;
 	
 	for(int i=0; i<count; i++){
-		wait_sem(pipe_info[pos].write_sem_id);
+		waitSem(pipe_info[pos].write_sem_id);
 
 		pipe_info[pos].pipe[pipe_info[pos].write_pos] = src[i];
 		pipe_info[pos].write_pos = (pipe_info[pos].write_pos + 1) % PIPE_SIZE;
 		pipe_info[pos].amount++;
 
-		post_sem(pipe_info[pos].read_sem_id);
+		postSem(pipe_info[pos].read_sem_id);
 	}
 	return count;
 }
@@ -168,13 +167,13 @@ int read_from_pipe(unsigned int pipe_id, char * dest, unsigned int count){
 	}
 	int i=0;	
 	for(; i<count && !(pipe_info[pos].eof && pipe_info[pos].amount == 0); i++){
-		wait_sem(pipe_info[pos].read_sem_id);
+		waitSem(pipe_info[pos].read_sem_id);
 
 		dest[i] = pipe_info[pos].pipe[pipe_info[pos].read_pos];
 		pipe_info[pos].read_pos = (pipe_info[pos].read_pos + 1) % PIPE_SIZE;
 		pipe_info[pos].amount--;
 		
-		post_sem(pipe_info[pos].write_sem_id);
+		postSem(pipe_info[pos].write_sem_id);
 	}
 	return i;
 }

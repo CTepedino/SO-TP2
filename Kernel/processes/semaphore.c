@@ -12,7 +12,7 @@ typedef struct pidList{
 } pidList;
 
 typedef struct Semaphore{
-    char * name;
+    uint64_t id;
     uint64_t value;
     int mutex;
     pidList * waitingList;
@@ -21,7 +21,7 @@ typedef struct Semaphore{
 
 Semaphore * semaphores[MAX_SEMAPHORES] = {NULL};
 
-int findSem(char * name);
+int findSem(int id);
 void addToPidList(pidList * list, uint64_t pid);
 void removeFromPidList(pidList * list, uint64_t pid);
 void freePidList(pidList * list);
@@ -29,15 +29,14 @@ void lockSem(Semaphore * sem);
 void unlockSem(Semaphore * sem);
 
 
-int openSem(char * name, unsigned int value){
-    if (findSem(name)!=-1){
+int openSem(int id, unsigned int value){
+    if (findSem(id)!=-1){
         return 0;
     }
     for(int i = 0; i < MAX_SEMAPHORES; i++){
         if(semaphores[i]==NULL){
             semaphores[i] = memAlloc(sizeof(Semaphore));
-            semaphores[i]->name = memAlloc(sizeof(name)+1);
-            copyString(semaphores[i]->name, name);
+            semaphores[i]->id = id;
             semaphores[i]->value = value;
             semaphores[i]->mutex = 0;
             semaphores[i]->waitingList = memAlloc(sizeof(pidList));
@@ -52,27 +51,42 @@ int openSem(char * name, unsigned int value){
     return -1;
 }
 
+int openNewSem(unsigned int value){
+    for(int i = 0; i< MAX_SEMAPHORES; i++){
+        if (semaphores[i]==NULL){
+            int id = 1;
+            while(1){
+                if (findSem(id)==-1){
+                    openSem(id, value);
+                }
+                id++;
+            }
 
-void closeSem(char * name){
-    int id = findSem(name);
-    if (id==-1){
+        }
+    }
+    return -1;
+}
+
+
+void closeSem(int id){
+    int idx = findSem(id);
+    if (idx==-1){
         return;
     }
-    memFree(semaphores[id]->name);
-    freePidList(semaphores[id]->waitingList);
-    freePidList(semaphores[id]->mutexList);
-    memFree(semaphores[id]);
-    semaphores[id] = NULL;
+    freePidList(semaphores[idx]->waitingList);
+    freePidList(semaphores[idx]->mutexList);
+    memFree(semaphores[idx]);
+    semaphores[idx] = NULL;
 }
 
 
 
-void postSem(char * name){
-    int id = findSem(name);
-    if (id==-1){
+void postSem(int id){
+    int idx = findSem(id);
+    if (idx==-1){
         return;
     }
-    Semaphore * sem = semaphores[id];
+    Semaphore * sem = semaphores[idx];
     lockSem(sem);
     sem->value++;
     if (sem->value != 0) {
@@ -85,12 +99,12 @@ void postSem(char * name){
     unlockSem(sem);
 }
 
-void waitSem(char * name){
-    int id = findSem(name);
-    if (id==-1){
+void waitSem(int id){
+    int idx = findSem(id);
+    if (idx==-1){
         return;
     }
-    Semaphore * sem = semaphores[id];
+    Semaphore * sem = semaphores[idx];
     lockSem(sem);
     while (sem->value == 0) {
         uint16_t pid = getCurrentPid();
@@ -103,9 +117,9 @@ void waitSem(char * name){
     unlockSem(sem);
 }
 
-int findSem(char * name){
+int findSem(int id){
     for(int i = 0; i<MAX_SEMAPHORES;i++){
-        if (semaphores[i] != NULL && stringCompare(name, semaphores[i]->name)==0){
+        if (semaphores[i] != NULL && semaphores[i]->id==id){
             return i;
         }
     }
