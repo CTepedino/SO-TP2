@@ -9,7 +9,7 @@
 #define SEM_CONTINUE 0
 #define SEM_BLOCK 1
 
-//#include <multitasking.h>
+#include <scheduler.h>
 #include <queue.h>
 
 int _xchg(unsigned int * lock, int value);

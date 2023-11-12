@@ -195,20 +195,17 @@ static int sys_schedulerInfo(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t 
 }
 
 static int sys_open_sem(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
-    rdx = open_sem(rdi, rsi);
-    return 0;
+    return open_sem(rdi, rsi);
 }
 
 static int sys_close_sem(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
-    rsi = close_sem(rdi);
-    return 0;
+    return close_sem(rdi);
 }
 
 static int sys_post_sem(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
-    rsi = post_sem(rdi);
-    return 0;
+    return post_sem(rdi);
 }
 
 static int sys_wait_sem(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
-    rsi = wait_sem(rdi);
-    return 0;
+    return wait_sem(rdi);
+}

@@ -177,25 +177,17 @@ void schedulerInfo(){
 
 
 int sem_open(unsigned int sem_id, unsigned int value){
-    int * toReturn;
-    sys_open_sem(sem_id, value, toReturn);
-    return &toReturn;
+    return sys_open_sem(sem_id, value);
 }
 
 int sem_close(unsigned int sem_id){
-    int * toReturn;
-    sys_close_sem(sem_id, toReturn);
-    return &toReturn;
+    return sys_close_sem(sem_id);
 }
 
 int sem_post(unsigned int sem_id){
-    int * toReturn;
-    sys_post_sem(sem_id, toReturn);
-    return &toReturn;
+    return sys_post_sem(sem_id);
 }
 
 int sem_wait(unsigned int sem_id){
-    int * toReturn;
-    sys_wait_sem(sem_id, toReturn);
-    return &toReturn;
+    return sys_wait_sem(sem_id);
 }
