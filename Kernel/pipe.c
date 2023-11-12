@@ -65,7 +65,7 @@ int create_pipe_available(){
 }
 
 int create_pipe(unsigned int pipe_id){
-	if(pipe_id == 0)				// 0 is reserved to denote empty record
+	if(pipe_id == 0)
 		return INVALID_PIPE_ID;
 	if(num_pipes == MAX_PIPES)
 		return ERROR_NO_MORE_SPACE;
@@ -80,19 +80,19 @@ int create_pipe(unsigned int pipe_id){
 		}
 	}
 
-	// create semaphore
-	int sem_id1 = create_sem_available(0);
-	int sem_id2 = create_sem_available(PIPE_SIZE);
+	
+	int sem_id1 = open_sem_available(0);
+	int sem_id2 = open_sem_available(PIPE_SIZE);
 	if(sem_id1 == INVALID_SEM_ID || sem_id2 == INVALID_SEM_ID){
-		destroy_sem(sem_id1);
-		destroy_sem(sem_id2);
+		close_sem(sem_id1);
+		close_sem(sem_id2);
 		return ERROR_NO_MORE_SPACE;
 	}
-	// create pipe
-	pipe_info[freePos].pipe = mm_malloc(PIPE_SIZE);
+	
+	pipe_info[freePos].pipe = memAlloc(PIPE_SIZE);
 	if(pipe_info[freePos].pipe == NULL){
-		destroy_sem(sem_id1);
-		destroy_sem(sem_id2);
+		close_sem(sem_id1);
+		close_sem(sem_id2);
 		return ERROR_NO_MORE_SPACE;
 	}
 
@@ -114,9 +114,9 @@ void destroy_pipe(unsigned int pipe_id){
 	int pos = find_pipe(pipe_id);
 	if(pos == INVALID_PIPE_ID)
 		return;
-	destroy_sem(pipe_info[pos].write_sem_id);	
-	destroy_sem(pipe_info[pos].read_sem_id);
-	mm_free(pipe_info[pos].pipe);
+	close_sem(pipe_info[pos].write_sem_id);	
+	close_sem(pipe_info[pos].read_sem_id);
+	memFree(pipe_info[pos].pipe);
 
 	pipe_info[pos].read_sem_id  = 0;
 	pipe_info[pos].write_sem_id  = 0;
@@ -149,10 +149,10 @@ int write_to_pipe(unsigned int pipe_id, const char * src, unsigned int count){
 		wait_sem(pipe_info[pos].write_sem_id);
 
 		pipe_info[pos].pipe[pipe_info[pos].write_pos] = src[i];
-		INCREASE_MOD(pipe_info[pos].write_pos, PIPE_SIZE);
+		pipe_info[pos].write_pos = (pipe_info[pos].write_pos + 1) % PIPE_SIZE;
 		pipe_info[pos].amount++;
 
-		signal_sem(pipe_info[pos].read_sem_id);
+		post_sem(pipe_info[pos].read_sem_id);
 	}
 	return count;
 }
@@ -171,10 +171,10 @@ int read_from_pipe(unsigned int pipe_id, char * dest, unsigned int count){
 		wait_sem(pipe_info[pos].read_sem_id);
 
 		dest[i] = pipe_info[pos].pipe[pipe_info[pos].read_pos];
-		INCREASE_MOD(pipe_info[pos].read_pos, PIPE_SIZE);
+		pipe_info[pos].read_pos = (pipe_info[pos].read_pos + 1) % PIPE_SIZE;
 		pipe_info[pos].amount--;
 		
-		signal_sem(pipe_info[pos].write_sem_id);
+		post_sem(pipe_info[pos].write_sem_id);
 	}
 	return i;
 }

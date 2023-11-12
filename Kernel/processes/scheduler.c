@@ -14,7 +14,8 @@ void initializeScheduler(){
     for(int i = 0; i < PRIORITY_LEVELS; i++){
         queues[i] = initializeProcessQueue();
     }
-    dummyProcess = initializeProcess(DUMMY_PID, DUMMY_PID, "dummy", 0, NULL, &dummy);
+    unsigned int fds[2] = {STDIN, STDOUT};
+    dummyProcess = initializeProcess(DUMMY_PID, DUMMY_PID, "dummy", 0, NULL, &dummy, fds);
     usedPIDs[DUMMY_PID] = 1;
 }
 
@@ -56,7 +57,7 @@ void * contextSwitch(void * RSP){
     return currentProcess->RSP;
 }
 
-uint64_t addProcess(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority){
+uint64_t addProcess(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority,unsigned int fds[]){
     uint64_t pid = 0;
     for(int i = DUMMY_PID+1; i < MAX_PROCESS_COUNT; i++){
         if (usedPIDs[i]==0){
@@ -69,7 +70,7 @@ uint64_t addProcess(void (* program)(int argc, char ** argv), char *name, int ar
         return 0;
     }
     uint64_t ppid = currentProcess == NULL ? DUMMY_PID : currentProcess->pid;
-    Process * process = initializeProcess(pid, ppid, name, argc, argv, program);
+    Process * process = initializeProcess(pid, ppid, name, argc, argv, program, fds);
     currentProcess->childrenCount++;
     if (priority >= PRIORITY_LEVELS){
         priority = PRIORITY_LEVELS-1;
@@ -201,4 +202,8 @@ void dummy(int argc, char ** argv){
     while(1){
         _hlt();
     }
+}
+
+Process * getCurrentProcess(){
+    return findProcess(getCurrentPid());
 }

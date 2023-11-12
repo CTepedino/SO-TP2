@@ -135,8 +135,8 @@ void memoryInfo(){
     sys_memoryInfo();
 }
 
-uint64_t execve(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority){
-    return sys_addProcess(program, name, argc, argv, priority);
+uint64_t execve(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority, unsigned int fds[]){
+    return sys_addProcess(program, name, argc, argv, priority, fds);
 }
 
 void kill(uint64_t pid){

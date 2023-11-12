@@ -64,7 +64,10 @@ int main(){
     initializeMemoryManager(HEAP_BASE_ADDRESS, HEAP_SIZE);
 
     initializeScheduler();
-    addProcess((EntryPoint)sampleCodeModuleAddress, "shell", 0, NULL, 0);
+
+	unsigned int fds[2] = {STDIN, STDOUT};
+    addProcess((EntryPoint)sampleCodeModuleAddress, "shell", 0, NULL, 0, fds);
+
     load_idt();
     setTimeFormat();
     while(1);

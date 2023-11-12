@@ -15,6 +15,7 @@ void test_processes(int argc, char *argv[]) {
   uint8_t action;
   uint64_t max_processes;
   char *argvAux[] = {0};
+  unsigned int fds[2] = {STDIN, STDOUT};
 
   if (argc != 1){
     print("Usage: testprocesses <max_processes>\n");
@@ -30,7 +31,7 @@ void test_processes(int argc, char *argv[]) {
 
     // Create max_processes processes
     for (rq = 0; rq < max_processes; rq++) {
-      execve(&endless_loop_print, "endless_loop_print", 1, (char**) argvAux, 0);
+      execve(&endless_loop_print, "endless_loop_print", 1, (char**) argvAux, 0, fds);
       p_rqs[rq].pid = getPid();
 
       if (p_rqs[rq].pid == 0) {

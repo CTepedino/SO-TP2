@@ -2,7 +2,7 @@
 
 void startProcess(void (*program)(int argc, char ** argv), int argc, char ** argv);
 
-Process * initializeProcess(uint64_t pid, uint64_t ppid, char * name, int argc, char ** argv, void (*program)(int argc, char ** argv)){
+Process * initializeProcess(uint64_t pid, uint64_t ppid, char * name, int argc, char ** argv, void (*program)(int argc, char ** argv), unsigned int fds[]){
     Process * newProcess = memAlloc(sizeof(Process));
     newProcess->pid = pid;
     newProcess->ppid = ppid;
@@ -18,6 +18,9 @@ Process * initializeProcess(uint64_t pid, uint64_t ppid, char * name, int argc, 
     newProcess->RBP = memAlloc(STACK_SIZE);
     newProcess->RSP = initializeStack(&startProcess, program,(void *) ((uint64_t)newProcess->RBP+STACK_SIZE), argc, newProcess->argv);
     newProcess->childrenCount = 0;
+    newProcess->input = fds[0];
+    newProcess->output = fds[1];
+    newProcess->foreground = 1;
     return newProcess;
 }
 
