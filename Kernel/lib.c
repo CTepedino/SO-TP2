@@ -52,7 +52,14 @@ void * memcpy(void * destination, const void * source, uint64_t length)
 	return destination;
 }
 
-
+void copyString(char * dst, char * src){
+    int i = 0;
+    while(src[i]){
+        dst[i]=src[i];
+        i++;
+    }
+    dst[i] = 0;
+}
 
 unsigned long strlen(const char * str){
     int i=0;
@@ -83,6 +90,13 @@ uint32_t uIntLen(uint64_t num, uint8_t base){
 
 void printString(const char * s){
     write(1, s, strlen(s));
+}
+
+void printInt(uint64_t n){
+    uint32_t len = uIntLen(n, 10);
+    char buffer[len+1];
+    intToString(n, buffer, 10, len);
+    printString(buffer);
 }
 
 void saveREGS(uint64_t * RSP){
