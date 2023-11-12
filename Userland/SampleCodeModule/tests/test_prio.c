@@ -5,8 +5,8 @@
 
 #define TOTAL_PROCESSES 3
 #define LOWEST 1  // TODO: Change as required
-#define MEDIUM 4  // TODO: Change as required
-#define HIGHEST 8 // TODO: Change as required
+#define MEDIUM 5  // TODO: Change as required
+#define HIGHEST 10 // TODO: Change as required
 
 int64_t prio[TOTAL_PROCESSES] = {LOWEST, MEDIUM, HIGHEST};
 

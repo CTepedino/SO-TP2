@@ -16,7 +16,7 @@ void test_processes(int argc, char *argv[]) {
   uint64_t max_processes;
   char *argvAux[] = {0};
 
-  if (argc != 2){
+  if (argc != 1){
     print("Usage: testprocesses <max_processes>\n");
     return;
   }

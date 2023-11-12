@@ -7,7 +7,7 @@ unsigned int scr_height;
 void processCommand(char * readbuf);
 int searchCommand(char * command);
 
-#define COMMAND_LIST_LENGTH 8
+#define COMMAND_LIST_LENGTH 10
 static Command commandList[] = {
         {"help", "Despliega una lista con los programas disponibles.", help},
         {"time", "Imprime en pantalla la fecha y hora del sistema.", time},
@@ -15,7 +15,7 @@ static Command commandList[] = {
         {"invalidopcode", "Ejecuta un programa que intenta realizar una operacion invalida, causando una excepcion.", invalidOpCode},
         {"regstatus", "Imprime en pantalla el ultimo estado de los registros guardado.", regStatus},
         {"pong", "Abre el juego Pong. El paddle izquierdo se controla con \'W\' y \'S\'.El derecho con \'I\' y \'K\'.", pong},
-        {"testmm", "(DEBUG)Test para memory manager", testmm},
+        {"testmm", "(DEBUG)Test para memory manager", test_mm},
         {"testprocesses", "(DEBUG)Test para procesos", test_processes},
         {"testprio", "(DEBUG)Test para prioridad de procesos", test_prio},
         {"testargs", "(DEBUG)Imprime en pantalla argc y argv", argTest},

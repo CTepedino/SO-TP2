@@ -63,7 +63,7 @@ void endless_loop() {
 }
 
 void endless_loop_print(uint64_t wait) {
-  int64_t pid = sys_getpid();
+  int64_t pid = getPid();
   char toPrint[5];
   intToString(pid, toPrint, 10);
 
@@ -73,7 +73,7 @@ void endless_loop_print(uint64_t wait) {
   }
 }
 
-void * memset(void * destination, int32_t c, uint64_t length)
+void * memset2(void * destination, int32_t c, uint64_t length)
 {
     uint8_t chr = (uint8_t)c;
     char * dst = (char*)destination;

@@ -14,6 +14,6 @@ int64_t satoi(char *str);
 void bussy_wait(uint64_t n);
 void endless_loop();
 void endless_loop_print(uint64_t wait);
-void * memset(void * destination, int32_t c, uint64_t length);
+void * memset2(void * destination, int32_t c, uint64_t length);
 
-#endif TEST_UTIL_H
+#endif
