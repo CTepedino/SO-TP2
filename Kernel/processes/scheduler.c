@@ -56,7 +56,7 @@ void * contextSwitch(void * RSP){
     return currentProcess->RSP;
 }
 
-void addProcess(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority){
+uint64_t addProcess(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority){
     uint64_t pid = 0;
     for(int i = DUMMY_PID+1; i < MAX_PROCESS_COUNT; i++){
         if (usedPIDs[i]==0){
@@ -66,7 +66,7 @@ void addProcess(void (* program)(int argc, char ** argv), char *name, int argc, 
         }
     }
     if (!pid){
-        return;
+        return 0;
     }
     uint64_t ppid = currentProcess == NULL ? DUMMY_PID : currentProcess->pid;
     Process * process = initializeProcess(pid, ppid, name, argc, argv, program);
@@ -75,6 +75,7 @@ void addProcess(void (* program)(int argc, char ** argv), char *name, int argc, 
         priority = PRIORITY_LEVELS-1;
     }
     enqueue(queues[priority], process);
+    return pid;
 }
 
 

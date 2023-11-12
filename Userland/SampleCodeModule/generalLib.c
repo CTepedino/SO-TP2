@@ -124,9 +124,7 @@ void sleep(uint64_t ticks){
 }
 
 void * memAlloc(size_t n){
-    void * mem = NULL;
-    sys_malloc(n, &mem);
-    return mem;
+    return sys_malloc(n);
 }
 
 void memFree(void * ptr){
@@ -137,8 +135,8 @@ void memoryInfo(){
     sys_memoryInfo();
 }
 
-void execve(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority){
-    sys_addProcess(program, name, argc, argv, priority);
+uint64_t execve(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority){
+    return sys_addProcess(program, name, argc, argv, priority);
 }
 
 void kill(uint64_t pid){
@@ -150,9 +148,7 @@ void killCurrent(){
 }
 
 uint64_t getPid(){
-    uint64_t pid;
-    sys_getCurrentPid(&pid);
-    return pid;
+    return sys_getCurrentPid();
 }
 
 void setPriority(uint64_t pid, uint64_t priority){

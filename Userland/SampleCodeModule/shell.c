@@ -167,7 +167,7 @@ void regStatus(){
         print("No hay un status de registros guardado. Puede guardar uno en cualquier momento apretando la tecla F1\n");
     }
 }
-
+/*
 typedef struct MM_rq {
     void * address;
     uint32_t size;
@@ -249,8 +249,8 @@ void testmm(int argc, char ** argv){
                 memFree(mm_rqs[i].address);
     }
 
-}
-/*
+}*/
+
 char * fn_aux(){
     char * aux = memAlloc(80);
     if (aux==NULL){
@@ -273,4 +273,4 @@ void testmm(int argc, char ** argv){
     memFree(aux);
     print("Memory after free:\n");
     memoryInfo();
-}*/
+}

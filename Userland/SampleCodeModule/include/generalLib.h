@@ -55,7 +55,7 @@ void * memAlloc(size_t n);
 void memFree(void * ptr);
 void memoryInfo();
 
-void execve(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority);
+uint64_t execve(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority);
 void kill(uint64_t pid);
 void killCurrent();
 uint64_t getPid();
