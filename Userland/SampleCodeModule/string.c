@@ -1,5 +1,5 @@
 #include <string.h>
-#include <stdint.h>
+
 
 #define IS_LOWER(c) (c >= 'a' && c <= 'z') ? 1 : 0
 
@@ -54,4 +54,46 @@ void toUpper(char * buffer,const char * string){
         i++;
     }
     buffer[i]=0;
+}
+
+
+char * last = NULL;
+char * strtok(char * str, char delim){
+    if (str != NULL){
+        last = str;
+    }
+    if (last==NULL){
+        return NULL;
+    }
+
+    char * start = last;
+    while (*start == delim){
+        start++;
+    }
+    if (!*start){
+        last = NULL;
+        return NULL;
+    }
+
+    char * end = start;
+    while (*end && *end != delim){
+        end++;
+    }
+    if (*end){
+        *end = 0;
+        last = end+1;
+    } else {
+        last = NULL;
+    }
+    return start;
+
+}
+
+void strcpy(const char * src, char * dst){
+    int i = 0;
+    while (src[i]){
+        dst[i]=src[i];
+        i++;
+    }
+    dst[i]=0;
 }

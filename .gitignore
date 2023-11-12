@@ -5,3 +5,4 @@ clean.sh
 .gdbinit
 .gdb_history
 .vscode/
+compileFreeList.sh

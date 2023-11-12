@@ -12,6 +12,17 @@ GLOBAL sys_getCurrentKeyPress
 GLOBAL sys_getCurrentReleasedKeys
 GLOBAL sys_malloc
 GLOBAL sys_free
+GLOBAL sys_memoryInfo
+GLOBAL sys_addProcess
+GLOBAL sys_killProcess
+GLOBAL sys_killCurrentProcess
+GLOBAL sys_getCurrentPid
+GLOBAL sys_setProcessPriority
+GLOBAL sys_blockProcess
+GLOBAL sys_unblockProcess
+GLOBAL sys_waitForChildren
+GLOBAL sys_yield
+GLOBAL sys_schedulerInfo
 GLOBAL sys_open_sem
 GLOBAL sys_close_sem
 GLOBAL sys_post_sem
@@ -67,15 +78,48 @@ sys_malloc:
 sys_free:
     systemcall 13
 
-sys_open_sem
+sys_memoryInfo:
     systemcall 14
 
-sys_close_sem
+sys_addProcess:
     systemcall 15
 
-sys_post_sem
-    systemcall 16 
+sys_killProcess:
+    systemcall 16
 
-sys_wait_sem
-    systemcall 16 
+sys_killCurrentProcess:
+    systemcall 17
+
+sys_getCurrentPid:
+    systemcall 18
+
+sys_setProcessPriority:
+    systemcall 19
+
+sys_blockProcess:
+    systemcall 20
+
+sys_unblockProcess:
+    systemcall 21
+
+sys_waitForChildren:
+    systemcall 22
+
+sys_yield:
+    systemcall 23
+
+sys_schedulerInfo:
+    systemcall 24
+    
+sys_open_sem:
+    systemcall 25
+
+sys_close_sem:
+    systemcall 26
+
+sys_post_sem:
+    systemcall 27 
+
+sys_wait_sem:
+    systemcall 28 
 

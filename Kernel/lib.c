@@ -52,7 +52,14 @@ void * memcpy(void * destination, const void * source, uint64_t length)
 	return destination;
 }
 
-
+void copyString(char * dst, char * src){
+    int i = 0;
+    while(src[i]){
+        dst[i]=src[i];
+        i++;
+    }
+    dst[i] = 0;
+}
 
 unsigned long strlen(const char * str){
     int i=0;
@@ -64,11 +71,32 @@ unsigned long strlen(const char * str){
 
 void intToString(uint64_t n, char * buffer, uint8_t base, uint8_t intLength) {;
     int aux;
+    buffer[intLength] = 0;
     for(int i=intLength-1; i>=0;i--){
         aux = n%base;
         buffer[i] = aux<10? '0'+aux : 'A'+aux-10;
         n/=base;
     }
+}
+
+uint32_t uIntLen(uint64_t num, uint8_t base){
+    uint32_t len=1;
+    while (num>=base){
+        num/=base;
+        len++;
+    }
+    return len;
+}
+
+void printString(const char * s){
+    write(1, s, strlen(s));
+}
+
+void printInt(uint64_t n){
+    uint32_t len = uIntLen(n, 10);
+    char buffer[len+1];
+    intToString(n, buffer, 10, len);
+    printString(buffer);
 }
 
 void saveREGS(uint64_t * RSP){
@@ -102,4 +130,17 @@ void getRTC(timeStruct * time) {
     time->hour = getTime(4);
     time->minute = getTime(2);
     time->second = getTime(0);
+}
+
+char *strcpy(char *destination, char *source) {
+    char *start = destination;
+
+    while (*source != 0) {
+        *destination = *source;
+        destination++;
+        source++;
+    }
+
+    *destination = 0;
+    return start;
 }

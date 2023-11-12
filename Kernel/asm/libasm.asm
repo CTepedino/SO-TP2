@@ -1,10 +1,48 @@
 GLOBAL cpuVendor
 GLOBAL setTimeFormat
 GLOBAL getTime
+GLOBAL forceTimerTick
+GLOBAL initializeStack
 GLOBAL _xchg
 
 section .text
-	
+
+	%macro pushState 0
+    	push rax
+    	push rbx
+    	push rcx
+    	push rdx
+    	push rbp
+    	push rdi
+    	push rsi
+    	push r8
+    	push r9
+    	push r10
+    	push r11
+    	push r12
+    	push r13
+    	push r14
+    	push r15
+    %endmacro
+
+    %macro popState 0
+    	pop r15
+    	pop r14
+    	pop r13
+    	pop r12
+    	pop r11
+    	pop r10
+    	pop r9
+    	pop r8
+    	pop rsi
+    	pop rdi
+    	pop rbp
+    	pop rdx
+    	pop rcx
+    	pop rbx
+    	pop rax
+    %endmacro
+
 cpuVendor:
 	push rbp
 	mov rbp, rsp
@@ -45,7 +83,6 @@ setTimeFormat: ;Para no devolver el tiempo en BCD
    ret
 
 getTime:
-
     push rbp
     mov rbp, rsp
 
@@ -57,7 +94,30 @@ getTime:
     pop rbp
     ret
 
-_xchg:
+forceTimerTick:
+    int 20h
+    ret
+
+initializeStack:
+	mov r14, rsp
+	mov r15, rbp
+	mov rsp, rdx
+	mov rbp, rdx
+	push 0x0
+	push rdx
+	push 0x202
+	push 0x8
+	push rdi
+	mov rdi, rsi
+	mov rsi, rcx
+	mov rdx, r8
+	pushState
+	mov rax, rsp
+	mov rsp, r14
+	mov rbp, r15
+	ret
+	
+	_xchg:
 	mov rax, rsi
 	xchg [rdi], eax
 	ret

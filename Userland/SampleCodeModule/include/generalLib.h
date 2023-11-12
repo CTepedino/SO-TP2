@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
+
 
 #define STDIN 0
 #define STDOUT 1
@@ -22,6 +24,8 @@ typedef struct timeStruct{
 void putChar(char c);
 void print(const char* string);
 void colorPrint(const char * string);
+void println(const char * string);
+void printInt(uint64_t n);
 
 void textPosition(uint32_t x, uint32_t y);
 void screenInfo(uint32_t * width, uint32_t * height);
@@ -49,6 +53,19 @@ void sleep(uint64_t ticks);
 
 void * memAlloc(size_t n);
 void memFree(void * ptr);
+void memoryInfo();
+
+uint64_t execve(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority);
+void kill(uint64_t pid);
+void killCurrent();
+uint64_t getPid();
+void setPriority(uint64_t pid, uint64_t priority);
+void blockProcess(uint64_t pid);
+void unblockProcess(uint64_t pid);
+void waitForChildren(uint64_t pid);
+void yield();
+void schedulerInfo();
+
 
 int sem_open(unsigned int sem_id, unsigned int value);
 int sem_close(unsigned int sem_id);

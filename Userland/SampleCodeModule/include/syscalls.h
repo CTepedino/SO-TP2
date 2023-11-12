@@ -16,10 +16,23 @@ void sys_putCircle(uint32_t hexColor, uint32_t x, uint32_t y, uint8_t radius);
 void sys_getCurrentKeyPress(char * keys);
 void sys_getCurrentReleasedKeys(char * rkeys);
 void sys_sleep(uint64_t ticks);
-void sys_malloc(size_t n, void * mem);
+void * sys_malloc(size_t n);
 void sys_free(void * ptr);
+void sys_memoryInfo();
+uint64_t sys_addProcess(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority);
+void sys_killProcess(uint64_t pid);
+void sys_killCurrentProcess();
+uint64_t sys_getCurrentPid();
+void sys_setProcessPriority(uint64_t pid, uint64_t priority);
+void sys_blockProcess(uint64_t pid);
+void sys_unblockProcess(uint64_t pid);
+void sys_waitForChildren(uint64_t pid);
+void sys_yield();
+void sys_schedulerInfo();
+
 void sys_open_sem(unsigned int sem_id, unsigned int value, int * toReturn);
 void sys_close_sem(unsigned int sem_id, int * toReturn);
 void sys_post_sem(unsigned int sem_id, int * toReturn);
 void sys_wait_sem(unsigned int sem_id, int * toReturn);
+
 #endif
