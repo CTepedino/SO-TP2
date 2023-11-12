@@ -10,7 +10,8 @@
 #define SEM_BLOCK 1
 
 #include <scheduler.h>
-#include <queue.h>
+#include <processQueue.h>
+#include <process.h>
 
 int _xchg(unsigned int * lock, int value);
 

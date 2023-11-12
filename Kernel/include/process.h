@@ -11,7 +11,7 @@
 #define STACK_SIZE (1024*4)
 
 
-enum status {Ready=0, Running, Blocked, WaitingForChildren};
+enum status {Ready=0, Running, Blocked, WaitingForChildren, WaitingForSem};
 
 typedef struct Process{
     uint64_t pid;

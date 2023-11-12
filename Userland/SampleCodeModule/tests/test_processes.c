@@ -30,7 +30,7 @@ void test_processes(int argc, char *argv[]) {
 
     // Create max_processes processes
     for (rq = 0; rq < max_processes; rq++) {
-      execve(&endless_loop, "endless_loop", 1, (char**) argvAux, 1);
+      execve(&endless_loop_print, "endless_loop", 1, (char**) argvAux, 1);
       p_rqs[rq].pid = getPid();
 
       if (p_rqs[rq].pid == 0) {

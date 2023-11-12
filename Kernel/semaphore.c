@@ -6,11 +6,11 @@
 #define MAX_WAITING_PROCESS 20
 
 typedef struct sem_record{
-	unsigned int sem_id;
+	uint64_t sem_id;
 	unsigned int sem_value;
 	unsigned int lock;
 
-	queueADT queue;
+	ProcessQueueADT queue;
 }sem_record;
 
 static sem_record sem_info[MAX_SEMAPHORES] = {{0}};
@@ -85,7 +85,7 @@ int open_sem(unsigned int sem_id, unsigned int value){
 		}
 	}
 
-	init_queue(&(sem_info[freePos].queue), MAX_WAITING_PROCESS);
+	sem_info[freePos].queue = initializeProcessQueue();
 
 	sem_info[freePos].sem_id = sem_id;
 	sem_info[freePos].sem_value = value;
@@ -104,7 +104,7 @@ int close_sem(unsigned int sem_id){
 	sem_info[pos].sem_id = 0;
 	sem_info[pos].sem_value = 0;
 
-	destroy_queue(&(sem_info[pos].queue));
+	freeQueue(sem_info[pos].queue);
 
 	unlock(&(sem_info[pos].lock));
 
@@ -121,12 +121,12 @@ int wait_sem(unsigned int sem_id){
 		sem_info[pos].sem_value--;
 	}
 	else{
-		int pid = get_current_pid();
-		alter_process_state(pid, WAITING_FOR_SEM);
-		enqueue(&(sem_info[pos].queue), pid);
+		int pid = getCurrentPid();
+		blockProcess(pid);
+		enqueue(sem_info[pos].queue, findProcessInQueue(sem_info[pos].queue, pid));
 
 		unlock(&(sem_info[pos].lock));
-		forceChangeTask();
+		yield();
 		return SUCCESS;
 	}
 
@@ -143,10 +143,10 @@ int post_sem(unsigned int sem_id){
 	}
 
 	lock(&(sem_info[pos].lock));
-	if(size_queue(&(sem_info[pos].queue)) > 0){	
+	if(!isEmpty(sem_info[pos].queue)){	
 
-		unsigned int blocked_pid = (unsigned int) dequeue(&(sem_info[pos].queue));
-		alter_process_state(blocked_pid, ACTIVE_PROCESS);
+		Process *blocked_process = dequeue(sem_info[pos].queue);
+		unblockProcess(blocked_process->pid);
 	}
 	else{
 		sem_info[pos].sem_value++;

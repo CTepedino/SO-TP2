@@ -62,14 +62,12 @@ void endless_loop() {
     ;
 }
 
-void endless_loop_print(uint64_t wait) {
+void endless_loop_print() {
   int64_t pid = getPid();
-  char toPrint[5];
-  intToString(pid, toPrint, 10);
 
   while (1) {
-    print(toPrint);
-    bussy_wait(wait);
+    printInt(pid);
+    bussy_wait(100);
   }
 }
 

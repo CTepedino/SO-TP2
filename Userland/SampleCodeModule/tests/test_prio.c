@@ -16,7 +16,7 @@ void test_prio() {
   uint64_t i;
 
   for (i = 0; i < TOTAL_PROCESSES; i++){
-    execve(&endless_loop, "endless_loop_print" , 1, (char**) argv, LOWEST);
+    execve(&endless_loop_print, "endless_loop_print" , 1, (char**) argv, LOWEST);
     pids[i] = getPid();
   }
 
