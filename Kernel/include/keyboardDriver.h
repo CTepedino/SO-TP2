@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <defs.h>
+#include <scheduler.h>
 #define F1_SCANCODE 0x3B
 
 void keyboard_handler();

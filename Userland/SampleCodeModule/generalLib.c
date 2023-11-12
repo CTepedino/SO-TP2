@@ -124,9 +124,7 @@ void sleep(uint64_t ticks){
 }
 
 void * memAlloc(size_t n){
-    void * mem = NULL;
-    sys_malloc(n, &mem);
-    return mem;
+    return sys_malloc(n);
 }
 
 void memFree(void * ptr){
@@ -135,4 +133,61 @@ void memFree(void * ptr){
 
 void memoryInfo(){
     sys_memoryInfo();
+}
+
+uint64_t execve(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority){
+    return sys_addProcess(program, name, argc, argv, priority);
+}
+
+void kill(uint64_t pid){
+    sys_killProcess(pid);
+}
+
+void killCurrent(){
+    sys_killCurrentProcess();
+}
+
+uint64_t getPid(){
+    return sys_getCurrentPid();
+}
+
+void setPriority(uint64_t pid, uint64_t priority){
+    sys_setProcessPriority(pid, priority);
+}
+
+void blockProcess(uint64_t pid){
+    sys_blockProcess(pid);
+}
+
+void unblockProcess(uint64_t pid){
+    sys_unblockProcess(pid);
+}
+
+void waitForChildren(uint64_t pid){
+    sys_waitForChildren(pid);
+}
+
+void yield(){
+    sys_yield();
+}
+
+void schedulerInfo(){
+    sys_schedulerInfo();
+}
+
+
+int sem_open(unsigned int sem_id, unsigned int value){
+    return sys_open_sem(sem_id, value);
+}
+
+int sem_close(unsigned int sem_id){
+    return sys_close_sem(sem_id);
+}
+
+int sem_post(unsigned int sem_id){
+    return sys_post_sem(sem_id);
+}
+
+int sem_wait(unsigned int sem_id){
+    return sys_wait_sem(sem_id);
 }

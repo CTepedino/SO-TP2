@@ -60,6 +60,41 @@ SECTION .text
 	pop rax
 %endmacro
 
+
+%macro pushStateNoRax 0
+	push rbx
+	push rcx
+	push rdx
+	push rbp
+	push rdi
+	push rsi
+	push r8
+	push r9
+	push r10
+	push r11
+	push r12
+	push r13
+	push r14
+	push r15
+%endmacro
+
+%macro popStateNoRax 0
+	pop r15
+	pop r14
+	pop r13
+	pop r12
+	pop r11
+	pop r10
+	pop r9
+	pop r8
+	pop rsi
+	pop rdi
+	pop rbp
+	pop rdx
+	pop rcx
+	pop rbx
+%endmacro
+
 %macro irqHandlerMaster 1
 	pushState
 
@@ -123,8 +158,20 @@ picSlaveMask:
 
 ;8254 Timer (Timer Tick)
 _irq00Handler:
-    irqHandlerMaster 0
+	pushState
 
+	mov rdi, 0 ; pasaje de parametro
+	call irqDispatcher
+
+	mov rdi, rsp
+	call contextSwitch
+	mov rsp, rax
+
+	mov al, 20h
+	out 20h, al
+
+	popState
+	iretq
 
 ;Keyboard
 _irq01Handler:
@@ -160,9 +207,11 @@ _exception6Handler:
 
 ;System Calls
 _syscallHandler:
+    pushStateNoRax
     push rax
     call syscallDispatcher
     add rsp, 8
+    popStateNoRax
     iretq
 
 haltcpu:

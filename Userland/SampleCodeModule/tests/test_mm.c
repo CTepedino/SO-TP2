@@ -1,8 +1,4 @@
-#include <generalLib.h>
 #include <test_util.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #define MAX_BLOCKS 128
 
@@ -11,18 +7,18 @@ typedef struct MM_rq {
   uint32_t size;
 } mm_rq;
 
-uint64_t test_mm(uint64_t argc, char *argv[]) {
+void test_mm(int argc, char *argv[]) {
 
   mm_rq mm_rqs[MAX_BLOCKS];
   uint8_t rq;
   uint32_t total;
   uint64_t max_memory;
 
-  if (argc != 1)
-    return -1;
+  if (argc != 0)
+    return;
 
   if ((max_memory = satoi(argv[0])) <= 0)
-    return -1;
+    return;
 
   while (1) {
     rq = 0;
@@ -42,18 +38,18 @@ uint64_t test_mm(uint64_t argc, char *argv[]) {
     // Set
 
     uint32_t i;
-    // for (i = 0; i < rq; i++)
-    //   if (mm_rqs[i].address)
-    //     memset(mm_rqs[i].address, i, mm_rqs[i].size);
+    for (i = 0; i < rq; i++)
+      if (mm_rqs[i].address)
+        memset2(mm_rqs[i].address, i, mm_rqs[i].size);
 
     // Check
     
-    // for (i = 0; i < rq; i++)
-    //   if (mm_rqs[i].address)
-    //     if (!memcheck(mm_rqs[i].address, i, mm_rqs[i].size)) {
-    //       printf("test_mm ERROR\n");
-    //       return -1;
-    //     }
+    for (i = 0; i < rq; i++)
+      if (mm_rqs[i].address)
+        if (!memcheck(mm_rqs[i].address, i, mm_rqs[i].size)) {
+          print("test_mm ERROR\n");
+          return;
+        }
 
     // Free
     for (i = 0; i < rq; i++)
