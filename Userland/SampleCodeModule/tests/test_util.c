@@ -62,12 +62,12 @@ void endless_loop() {
     ;
 }
 
-void endless_loop_print() {
+void endless_loop_print(int argc, char *argv[]) {
   int64_t pid = getPid();
 
   while (1) {
     printInt(pid);
-    bussy_wait(100);
+    bussy_wait(10000);
   }
 }
 
