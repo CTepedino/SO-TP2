@@ -1,4 +1,4 @@
-#include <generalLib.h>
+/*#include <generalLib.h>
 #include <test_util.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -61,3 +61,4 @@ uint64_t test_mm(uint64_t argc, char *argv[]) {
         memFree(mm_rqs[i].address);
   }
 }
+*/

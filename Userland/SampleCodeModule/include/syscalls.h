@@ -19,4 +19,15 @@ void sys_sleep(uint64_t ticks);
 void sys_malloc(size_t n, void * mem);
 void sys_free(void * ptr);
 void sys_memoryInfo();
+void sys_addProcess(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority);
+void sys_killProcess(uint64_t pid);
+void sys_killCurrentProcess();
+void sys_getCurrentPid(uint64_t * pid);
+void sys_setProcessPriority(uint64_t pid, uint64_t priority);
+void sys_blockProcess(uint64_t pid);
+void sys_unblockProcess(uint64_t pid);
+void sys_waitForChildren(uint64_t pid);
+void sys_yield();
+void sys_schedulerInfo();
+
 #endif

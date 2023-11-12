@@ -54,4 +54,16 @@ void sleep(uint64_t ticks);
 void * memAlloc(size_t n);
 void memFree(void * ptr);
 void memoryInfo();
+
+void execve(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority);
+void kill(uint64_t pid);
+void killCurrent();
+uint64_t getPid();
+void setPriority(uint64_t pid, uint64_t priority);
+void blockProcess(uint64_t pid);
+void unblockProcess(uint64_t pid);
+void waitForChildren(uint64_t pid);
+void yield();
+void schedulerInfo();
+
 #endif

@@ -33,5 +33,7 @@ uint32_t getTime(int id);
 void setTimeFormat();
 void getRTC(timeStruct * time);
 
+void forceTimerTick();
+void * initializeStack(void (*start)(void (*program)(int argc, char ** argv), int argc, char ** argv), void (* program)(int argc, char ** argv), void * rsp, int argc, char ** argv);
 
 #endif

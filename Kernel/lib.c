@@ -131,3 +131,16 @@ void getRTC(timeStruct * time) {
     time->minute = getTime(2);
     time->second = getTime(0);
 }
+
+char *strcpy(char *destination, char *source) {
+    char *start = destination;
+
+    while (*source != 0) {
+        *destination = *source;
+        destination++;
+        source++;
+    }
+
+    *destination = 0;
+    return start;
+}

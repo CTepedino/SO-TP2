@@ -136,3 +136,45 @@ void memFree(void * ptr){
 void memoryInfo(){
     sys_memoryInfo();
 }
+
+void execve(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority){
+    sys_addProcess(program, name, argc, argv, priority);
+}
+
+void kill(uint64_t pid){
+    sys_killProcess(pid);
+}
+
+void killCurrent(){
+    sys_killCurrentProcess();
+}
+
+uint64_t getPid(){
+    uint64_t pid;
+    sys_getCurrentPid(&pid);
+    return pid;
+}
+
+void setPriority(uint64_t pid, uint64_t priority){
+    sys_setProcessPriority(pid, priority);
+}
+
+void blockProcess(uint64_t pid){
+    sys_blockProcess(pid);
+}
+
+void unblockProcess(uint64_t pid){
+    sys_unblockProcess(pid);
+}
+
+void waitForChildren(uint64_t pid){
+    sys_waitForChildren(pid);
+}
+
+void yield(){
+    sys_yield();
+}
+
+void schedulerInfo(){
+    sys_schedulerInfo();
+}
