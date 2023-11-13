@@ -62,9 +62,10 @@ uint64_t getPid();
 void setPriority(uint64_t pid, uint64_t priority);
 void blockProcess(uint64_t pid);
 void unblockProcess(uint64_t pid);
-void waitForChildren(uint64_t pid);
+void waitForChildren(uint64_t childPid);
 void yield();
 void schedulerInfo();
+
 
 int semOpen(int id, unsigned int value);
 void semClose(int id);
