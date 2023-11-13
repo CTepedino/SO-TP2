@@ -62,7 +62,7 @@ uint64_t getPid();
 void setPriority(uint64_t pid, uint64_t priority);
 void blockProcess(uint64_t pid);
 void unblockProcess(uint64_t pid);
-void waitForChildren(uint64_t pid);
+void waitForChildren(uint64_t childPid);
 void yield();
 void schedulerInfo();
 
@@ -76,7 +76,7 @@ int openPipe(int id, uint8_t mode);
 int createNewPipe();
 void closePipe(int id);
 int readPipe(int id, char * buffer, uint64_t length);
-int writePipe(int id, const char * string, uint64_t count);
+int writePipe(int id, const char * string,uint64_t count);
 
 void wc(int argc, char *argv[]);
 void cat(int argc, char *argv[]);

@@ -26,7 +26,7 @@ Process * getCurrentProcess();
 void setProcessPriority(uint64_t pid, uint8_t priority);
 void blockProcess(uint64_t pid);
 void unblockProcess(uint64_t pid);
-void waitForChildren(uint64_t pid);
+void waitForChildren(uint64_t childPid);
 void yield();
 
 void schedulerInfo();

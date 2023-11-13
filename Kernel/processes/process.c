@@ -17,7 +17,7 @@ Process * initializeProcess(uint64_t pid, uint64_t ppid, char * name, int argc, 
     newProcess->argv[argc] = NULL;
     newProcess->RBP = memAlloc(STACK_SIZE);
     newProcess->RSP = initializeStack(&startProcess, program,(void *) ((uint64_t)newProcess->RBP+STACK_SIZE), argc, newProcess->argv);
-    newProcess->childrenCount = 0;
+   // newProcess->childrenCount = 0;
     newProcess->fds.input = fds[0];
     newProcess->fds.output = fds[1];
     if (fds[0] >= DEFAULT_FD_COUNT){
@@ -26,6 +26,7 @@ Process * initializeProcess(uint64_t pid, uint64_t ppid, char * name, int argc, 
     if (fds[1]  >= DEFAULT_FD_COUNT){
         openPipe(pid, fds[1], MODE_WRITE);
     }
+    newProcess->waitingList = initializePidList();
     return newProcess;
 }
 
@@ -42,6 +43,7 @@ void freeProcess(Process * process){
     }
     memFree(process->argv);
     memFree(process->RBP);
+    freePidList(process->waitingList);
     memFree(process);
 }
 

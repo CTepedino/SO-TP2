@@ -36,9 +36,22 @@ void * contextSwitch(void * RSP){
         startIterator(queues[i]);
         while(hasNext(queues[i])){
             currentProcess = next(queues[i]);
-            if (currentProcess->status == WaitingForChildren && currentProcess->childrenCount == 0){
-                currentProcess->status = Ready;
+
+            if (currentProcess->status == WaitingForChildren){
+                startPidIterator(currentProcess->waitingList);
+                while(hasNextPid(currentProcess->waitingList)){
+                    uint64_t childPid = nextPid(currentProcess->waitingList);
+                    Process * child = findProcess(childPid);
+                    if (child == NULL || child->ppid != currentProcess->pid){
+                        removeFromPidList(currentProcess->waitingList, childPid);
+                        startPidIterator(currentProcess->waitingList);
+                    }
+                }
+                if (isEmptyPidList(currentProcess->waitingList)){
+                    currentProcess->status = Ready;
+                }
             }
+
             if (currentProcess->status == Ready){
                 foundNext = 1;
                 remove(queues[i], currentProcess->pid);
@@ -76,7 +89,6 @@ uint64_t addProcess(void (* program)(int argc, char ** argv), char *name, int ar
     }
     uint64_t ppid = currentProcess == NULL ? DUMMY_PID : currentProcess->pid;
     Process * process = initializeProcess(pid, ppid, name, argc, argv, program, fds);
-    currentProcess->childrenCount++;
     if (priority >= PRIORITY_LEVELS){
         priority = PRIORITY_LEVELS-1;
     }
@@ -98,15 +110,15 @@ void killProcess(uint64_t pid){
     }
     removeForAllSemaphores(pid);
     Process * parent = findProcess(process->ppid);
-    if (parent != NULL){
-        parent->childrenCount--;
-    }
-    if(process->pid == currentProcess->pid){
-        yield();
-    }
+
+    uint64_t killedPid = process->pid;
+    uint64_t currentPid = currentProcess->pid;
 
     usedPIDs[process->pid] = 0;
     freeProcess(process);
+    if(killedPid == currentPid){
+        yield();
+    }
 }
 
 void killCurrentProcess(){
@@ -141,7 +153,7 @@ void blockProcess(uint64_t pid){
     enum status oldStatus = process->status;
     process->status = Blocked;
     if (oldStatus == Running){
-        setProcessPriority(pid, PRIORITY_LEVELS - quantum + remainingQuantum);
+        setProcessPriority(pid, 1+PRIORITY_LEVELS - quantum);
         yield();
     }
 }
@@ -155,16 +167,14 @@ void unblockProcess(uint64_t pid){
 
 }
 
-void waitForChildren(uint64_t pid){
-    Process * process = findProcess(pid);
-    if (process==NULL){
-        return;
-    }
-    enum status oldStatus = process->status;
-    process->status = WaitingForChildren;
-    if (oldStatus==Running){
-        yield();
-    }
+void waitForChildren(uint64_t childPid){
+   Process * child = findProcess(childPid);
+   if (child == NULL || child->ppid != currentProcess->pid){
+       return;
+   }
+   addToPidList(currentProcess->waitingList, child->pid);
+   currentProcess->status = WaitingForChildren;
+   yield();
 }
 
 void yield(){
@@ -188,8 +198,8 @@ void schedulerInfo(){
             printInt((uint64_t)process->RSP);
             printString("; RBP: ");
             printInt((uint64_t)process->RBP);
-            /*printString(";fg: ");
-            printString(process->foreground ? "fg" : "bg");*/
+            printString(";fg: ");
+            printString(process->fds.input==STDIN? "fd" : "bg");
             printString("\n");
         }
     }

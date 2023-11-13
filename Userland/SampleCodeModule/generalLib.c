@@ -133,7 +133,6 @@ void memFree(void * ptr){
 
 void memoryInfo(){
     sys_memoryInfo();
-    killCurrent();
 }
 
 uint64_t execve(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority, int fds[]){
@@ -164,8 +163,8 @@ void unblockProcess(uint64_t pid){
     sys_unblockProcess(pid);
 }
 
-void waitForChildren(uint64_t pid){
-    sys_waitForChildren(pid);
+void waitForChildren(uint64_t childPid){
+    sys_waitForChildren(childPid);
 }
 
 void yield(){
@@ -174,7 +173,6 @@ void yield(){
 
 void schedulerInfo(){
     sys_schedulerInfo();
-    killCurrent();
 }
 
 
@@ -195,11 +193,11 @@ void semWait(int id){
 }
 
 int openPipe(int id, uint8_t mode){
-    return sys_openPipe(id, mode);
+    sys_openPipe(id, mode);
 }
 
 int createNewPipe(){
-    return sys_createNewPipe();
+    sys_createNewPipe();
 }
 
 void closePipe(int id){
@@ -207,11 +205,11 @@ void closePipe(int id){
 }
 
 int readPipe(int id, char * buffer, uint64_t length){
-    return sys_readPipe(id, buffer, length);
+    sys_readPipe(id, buffer, length);
 }
 
-int writePipe(int id, const char * string, uint64_t count){
-    return sys_writePipe(id, string, count);
+int writePipe(int id, const char * string,uint64_t count){
+    sys_writePipe(id, string, count);
 }
 
 void wc(int argc, char *argv[]) {
@@ -225,7 +223,6 @@ void wc(int argc, char *argv[]) {
   print("Line count: ");
   printInt(lines);
   print("\n");
-  killCurrent();
 }
 
 void cat(int argc, char *argv[]) {
@@ -233,7 +230,6 @@ void cat(int argc, char *argv[]) {
   while ((c = getChar()) != 0)
     putChar(c);
   putChar('\n');
-  killCurrent();
 }
 
 void filter(int argc, char *argv[]) {
@@ -244,7 +240,6 @@ void filter(int argc, char *argv[]) {
     }
   }
   putChar('\n');
-  killCurrent();
 }
 
 void loop(int argc,char** argv){
@@ -253,7 +248,6 @@ void loop(int argc,char** argv){
         printInt(getPid());
         putChar('\n');
         putChar('\n');
-        sleep(10); 
+        sleep(10);
     }
-    killCurrent();
 }
