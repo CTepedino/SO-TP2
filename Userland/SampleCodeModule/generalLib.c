@@ -192,6 +192,26 @@ void semWait(int id){
     sys_waitSem(id);
 }
 
+int openPipe(int id, uint8_t mode){
+    return sys_openPipe(id, mode);
+}
+
+int createNewPipe(){
+    return sys_createNewPipe;
+}
+
+void closePipe(int id){
+    sys_closePipe(id);
+}
+
+int readPipe(int id, char * buffer, uint64_t length){
+    return sys_readPipe(id, buffer, length);
+}
+
+int writePipe(int id, const char * string, uint64_t count){
+    return sys_writePipe(id, string, count);
+}
+
 void wc(int argc, char *argv[]) {
   int lines = 0;
   char c;

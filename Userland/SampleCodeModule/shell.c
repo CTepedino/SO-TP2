@@ -8,6 +8,7 @@ void processCommand(char * readbuf);
 int searchCommand(char * command);
 
 #define COMMAND_LIST_LENGTH 20
+#define PROCCESS_LIST_LENGTH 4
 
 static Command commandList[] = {
         {"help", "Despliega una lista con los programas disponibles.", help},
@@ -21,17 +22,19 @@ static Command commandList[] = {
         {"testprio", "(DEBUG)Test para prioridad de procesos", test_prio},
         {"testsync", "(DEBUG)Test para sincronizacion", test_sync},
         {"testargs", "(DEBUG)Imprime en pantalla argc y argv", argTest},
-        {"mem","Imprime el estado de la memoria", memoryInfo},
-        {"kill","Mata un proceso dado su ID.", killShell},
-        {"nice","Cambia la prioridad de un proceso dado su ID y la nueva prioridad.", nice},
-        {"block"," Cambia el estado de un proceso entre bloqueado y listo dado su ID.", block},
-        {"ps"," Imprime la lista de todos los procesos con sus propiedades.", schedulerInfo},
-        {"loop","  Imprime su ID con un saludo cada una determinada cantidad de segundos.", loop},
-        {"wc","Cuenta la cantidad de lineas del input",wc},
-        {"cat","Imprime el stdin tal como lo recibe", cat},
-        {"filter","Filtra las vocales del input",filter},
+        {"mem", "Imprime el estado de la memoria", memoryInfo},
+        {"kill", "Mata un proceso dado su ID.", killShell},
+        {"nice", "Cambia la prioridad de un proceso dado su ID y la nueva prioridad.", nice},
+        {"block", "Cambia el estado de un proceso entre bloqueado y listo dado su ID.", block},
+        {"ps", "Imprime la lista de todos los procesos con sus propiedades.", schedulerInfo},
+        {"loop", "Imprime su ID con un saludo cada una determinada cantidad de segundos.", loop},
+        {"wc", "Cuenta la cantidad de lineas del input", wc},
+        {"cat", "Imprime el stdin tal como lo recibe", cat},
+        {"filter", "Filtra las vocales del input", filter},
         //{"phylo","Implementa el problema de los filósofos comensales",phylo}
 };
+
+char * processList[PROCCESS_LIST_LENGTH] = {"loop", "wc", "cat", "filter"};
 
 
 void shellStart(){
@@ -54,6 +57,7 @@ void processCommand(char * readbuf){
     int commandIndex = -1;
     int validCommand = 0;
     int i = 0;
+    int foreground = 1;
     for(; i<MAX_NAME_LENGTH; i++){
         if( readbuf[i] == 0 || readbuf[i]==' '){
             command[i] = 0;
@@ -73,15 +77,19 @@ void processCommand(char * readbuf){
         char * argbuf = readbuf + i;
         char * currentArg = strtok(argbuf, ' ');
         while(currentArg != NULL){
-            strcpy(currentArg, args[argc]);
-            argc++;
-            currentArg = strtok(NULL, ' ');
+            if(strcmp(currentArg, "&")){
+                foreground = 0;
+            } else {
+                strcpy(currentArg, args[argc]);
+                argc++;
+                currentArg = strtok(NULL, ' ');
+            }
         }
         char *argv[MAX_ARG_COUNT];
         for(int i =0; i<MAX_ARG_COUNT; i++){
             argv[i] = args[i];
         }
-        commandList[commandIndex].function(argc, argv);
+        executeCommand(commandList[commandIndex], argc, argv, foreground);
     } else {
         print(command);
         println(": comando invalido");
@@ -95,6 +103,35 @@ int searchCommand(char * command){
         }
     }
     return -1;
+}
+
+void executeCommand(Command command, int argc, char ** argv, int foreground){
+    if(isAProcess(command)){
+        int fds[2];
+        uint64_t childPid;
+        if(foreground){
+            fds[0] = STDIN;
+            fds[1] = STDOUT;
+        } else {
+            fds[0] = STDIN;
+            fds[1] = -1;
+        }
+        childPid = execve(command.function, command.name, argc, argv, 0, fds);
+        if(foreground){
+            waitForChildren(childPid);
+        }
+    } else{
+        command.function(argc, argv);
+    }
+}   
+
+int isAProcess(Command command){
+    for(int i = 0; i < PROCCESS_LIST_LENGTH; i++){
+        if(strcmp(processList[i], command.name)){
+            return 1;
+        }
+    }
+    return 0;
 }
 
 
@@ -111,6 +148,7 @@ void help(){
         println(commandList[i].desc);
     }
 }
+
 void argTest(int argc, char ** argv){
     print("argc: ");
     char argcBuf[10];

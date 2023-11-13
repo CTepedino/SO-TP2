@@ -24,6 +24,8 @@ typedef struct Command{
 
 void shellStart();
 
+void executeCommand(Command command, int argc, char ** argv, int foreground);
+
 void help();
 void time();
 void regStatus();
