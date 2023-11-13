@@ -56,7 +56,7 @@ void test_sync(int argc, char *argv[]) { //{n, use_sem, 0}
 
   char *argvDec[] = {argv[0], "-1", argv[1], NULL};
   char *argvInc[] = {argv[0], "1", argv[1], NULL};
-  unsigned int fds[2] = {STDIN, STDOUT};
+  int fds[2] = {STDIN, STDOUT};
 
   global = 0;
 

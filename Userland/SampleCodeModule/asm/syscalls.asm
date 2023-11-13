@@ -90,14 +90,19 @@ sys_free:
 
 sys_memoryInfo:
     systemcall 14
+
 sys_kill:
     systemcall 15
+
 sys_nice:
     systemcall 16
+
 sys_block:
-    systemacall 17
+    systemcall 17
+
 sys_ps: 
     systemcall 18
+    
 sys_getpid:
     systemcall 19
 

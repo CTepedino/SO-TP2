@@ -7,7 +7,8 @@ unsigned int scr_height;
 void processCommand(char * readbuf);
 int searchCommand(char * command);
 
-#define COMMAND_LIST_LENGTH 11
+#define COMMAND_LIST_LENGTH 20
+
 static Command commandList[] = {
         {"help", "Despliega una lista con los programas disponibles.", help},
         {"time", "Imprime en pantalla la fecha y hora del sistema.", time},
@@ -20,16 +21,16 @@ static Command commandList[] = {
         {"testprio", "(DEBUG)Test para prioridad de procesos", test_prio},
         {"testsync", "(DEBUG)Test para sincronizacion", test_sync},
         {"testargs", "(DEBUG)Imprime en pantalla argc y argv", argTest},
-        {"mem","Imprime el estado de la memoria",memoryInfo},
-        {"kill","Mata un proceso dado su ID.",kill},
-        {"nice","Cambia la prioridad de un proceso dado su ID y la nueva prioridad.",setPriority},
-        {"block"," Cambia el estado de un proceso entre bloqueado y listo dado su ID.",blockProcess},
-        {"ps"," Imprime la lista de todos los procesos con sus propiedades.",schedulerInfo},
-        {"loop","  Imprime su ID con un saludo cada una determinada cantidad de segundos.",loop},
+        {"mem","Imprime el estado de la memoria", memoryInfo},
+        {"kill","Mata un proceso dado su ID.", killShell},
+        {"nice","Cambia la prioridad de un proceso dado su ID y la nueva prioridad.", nice},
+        {"block"," Cambia el estado de un proceso entre bloqueado y listo dado su ID.", block},
+        {"ps"," Imprime la lista de todos los procesos con sus propiedades.", schedulerInfo},
+        {"loop","  Imprime su ID con un saludo cada una determinada cantidad de segundos.", loop},
         {"wc","Cuenta la cantidad de lineas del input",wc},
         {"cat","Imprime el stdin tal como lo recibe", cat},
         {"filter","Filtra las vocales del input",filter},
-        {"phylo","Implementa el problema de los filósofos comensales",phylo}
+        //{"phylo","Implementa el problema de los filósofos comensales",phylo}
 };
 
 
@@ -179,4 +180,25 @@ void regStatus(){
     else{
         print("No hay un status de registros guardado. Puede guardar uno en cualquier momento apretando la tecla F1\n");
     }
+}
+
+void killShell(int argc, char ** argv){
+    if (argc != 1){
+        print("Usage: kill <pid>");
+    }
+    kill(my_atoi(argv[0]));
+}
+
+void nice(int argc, char ** argv){
+    if(argc != 2){
+        print("Usage: nice <pid> <priority>");
+    }
+    setPriority(my_atoi(argv[0]), my_atoi(argv[1]));
+}
+
+void block(int argc, char ** argv){
+    if (argc != 1){
+        print("Usage: kill <pid>");
+    }
+    blockProcess(my_atoi(argv[0]));
 }

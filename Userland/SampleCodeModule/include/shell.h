@@ -28,7 +28,10 @@ void help();
 void time();
 void regStatus();
 
-void testmm(int argc, char ** argv);
 void argTest(int argc, char ** argv);
+
+void killShell(int argc, char ** argv);
+void nice(int argc, char ** argv);
+void block(int argc, char ** argv);
 
 #endif

@@ -201,7 +201,9 @@ void wc(int argc, char *argv[]) {
       
     }
   }
-  printf("Line count: %d\n", lines);
+  print("Line count: ");
+  printInt(lines);
+  print("\n");
   
 }
 
@@ -224,7 +226,9 @@ void filter(int argc, char *argv[]) {
 }
 void loop(int argc,char** argv){
     while(1){
-        printf("Hello! My pid is: %d\n", sys_getCurrentPid());
+        print("Hello! My pid is: ");
+        printInt(getPid());
+        putChar('\n');
         putChar('\n');
     sleep(10); 
     }
