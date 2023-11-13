@@ -48,6 +48,4 @@ void test_prio() {
 
   for (i = 0; i < TOTAL_PROCESSES; i++)
     kill(pids[i]);
-  
-  killCurrent();
 }

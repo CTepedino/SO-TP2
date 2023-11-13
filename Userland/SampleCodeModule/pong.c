@@ -60,7 +60,6 @@ void pong(){
     mainGame();
     clearScreen();
     textPosition(0, height);
-    killCurrent();
 }
 
 static void movePaddles(){

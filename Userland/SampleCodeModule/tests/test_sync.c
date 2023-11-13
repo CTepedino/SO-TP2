@@ -52,7 +52,7 @@ void test_sync(int argc, char ** argv) { //{n, use_sem, 0}
   uint64_t pids[2 * TOTAL_PAIR_PROCESSES];
 
   if (argc != 2)
-    killCurrent();
+    return;
 
   char *argvDec[] = {argv[0], "-1", argv[1], NULL};
   char *argvInc[] = {argv[0], "1", argv[1], NULL};
@@ -74,6 +74,4 @@ void test_sync(int argc, char ** argv) { //{n, use_sem, 0}
   print("Final value: ");
   printInt(global);
   print("\n");
-
-  killCurrent();
 }

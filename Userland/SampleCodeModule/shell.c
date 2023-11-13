@@ -131,7 +131,6 @@ void help(){
         }
         println(commandList[i].desc);
     }
-    killCurrent();
 }
 
 void argTest(int argc, char ** argv){
@@ -147,7 +146,6 @@ void argTest(int argc, char ** argv){
         }
     }
     println("}");
-    killCurrent();
 }
 
 
@@ -172,7 +170,6 @@ void time(){
     intToStringL(time.minute, buffer, 10, 2);
     print(buffer);
     putChar('\n');
-    killCurrent();
 }
 
 
@@ -205,7 +202,6 @@ void regStatus(){
     else{
         print("No hay un status de registros guardado. Puede guardar uno en cualquier momento apretando la tecla F1\n");
     }
-    killCurrent();
 }
 
 void killShell(int argc, char ** argv){
@@ -213,7 +209,6 @@ void killShell(int argc, char ** argv){
         print("Usage: kill <pid>");
     }
     kill(my_atoi(argv[0]));
-    killCurrent();
 }
 
 void nice(int argc, char ** argv){
@@ -221,7 +216,6 @@ void nice(int argc, char ** argv){
         print("Usage: nice <pid> <priority>");
     }
     setPriority(my_atoi(argv[0]), my_atoi(argv[1]));
-    killCurrent();
 }
 
 void block(int argc, char ** argv){
@@ -229,5 +223,4 @@ void block(int argc, char ** argv){
         print("Usage: kill <pid>");
     }
     blockProcess(my_atoi(argv[0]));
-    killCurrent();
 }

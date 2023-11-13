@@ -19,15 +19,12 @@ void test_processes(int argc, char **argv) {
 
   if (argc != 1){
     print("Usage: testprocesses <max_processes>\n");
-    killCurrent();
+    return;
   }
 
   if ((max_processes = satoi(argv[0])) <= 0)
-    killCurrent();
-
-  print("Argument sent: ");
-  printInt(max_processes);  
-
+    return;
+ 
   p_rq p_rqs[max_processes];
 
   while (1) {
@@ -39,7 +36,7 @@ void test_processes(int argc, char **argv) {
 
       if (p_rqs[rq].pid == 0) {
         print("test_processes: ERROR creating process\n");
-        killCurrent();
+        return;
       } else {
         p_rqs[rq].state = RUNNING;
         alive++;
@@ -78,5 +75,4 @@ void test_processes(int argc, char **argv) {
         }
     }
   }
-  killCurrent();
 }

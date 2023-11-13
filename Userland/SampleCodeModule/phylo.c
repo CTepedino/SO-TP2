@@ -117,6 +117,7 @@ void philosopher(int argc, char ** num) {
         eat();
         putForks(i);
         semPost(safe[i]);
+        sleep(50);
     }
 }
 
