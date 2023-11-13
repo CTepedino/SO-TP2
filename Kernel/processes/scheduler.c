@@ -109,7 +109,6 @@ void killProcess(uint64_t pid){
         return;
     }
     removeForAllSemaphores(pid);
-    Process * parent = findProcess(process->ppid);
 
     uint64_t killedPid = process->pid;
     uint64_t currentPid = currentProcess->pid;
