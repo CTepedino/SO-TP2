@@ -56,4 +56,5 @@ void test_mm(int argc, char *argv[]) {
       if (mm_rqs[i].address)
         memFree(mm_rqs[i].address);
   }
+  killCurrent();
 }

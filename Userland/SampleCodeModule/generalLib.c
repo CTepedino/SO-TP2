@@ -133,6 +133,7 @@ void memFree(void * ptr){
 
 void memoryInfo(){
     sys_memoryInfo();
+    killCurrent();
 }
 
 uint64_t execve(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority, int fds[]){
@@ -173,6 +174,7 @@ void yield(){
 
 void schedulerInfo(){
     sys_schedulerInfo();
+    killCurrent();
 }
 
 
@@ -197,7 +199,7 @@ int openPipe(int id, uint8_t mode){
 }
 
 int createNewPipe(){
-    return sys_createNewPipe;
+    return sys_createNewPipe();
 }
 
 void closePipe(int id){
@@ -218,13 +220,12 @@ void wc(int argc, char *argv[]) {
   while ((c = getChar()) != 0) {
     if (c == '\n') {
       lines++;
-      
     }
   }
   print("Line count: ");
   printInt(lines);
   print("\n");
-  
+  killCurrent();
 }
 
 void cat(int argc, char *argv[]) {
@@ -232,6 +233,7 @@ void cat(int argc, char *argv[]) {
   while ((c = getChar()) != 0)
     putChar(c);
   putChar('\n');
+  killCurrent();
 }
 
 void filter(int argc, char *argv[]) {
@@ -242,14 +244,16 @@ void filter(int argc, char *argv[]) {
     }
   }
   putChar('\n');
-  return;
+  killCurrent();
 }
+
 void loop(int argc,char** argv){
     while(1){
         print("Hello! My pid is: ");
         printInt(getPid());
         putChar('\n');
         putChar('\n');
-    sleep(10); 
+        sleep(10); 
     }
+    killCurrent();
 }

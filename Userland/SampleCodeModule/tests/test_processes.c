@@ -75,4 +75,5 @@ void test_processes(int argc, char *argv[]) {
         }
     }
   }
+  killCurrent();
 }

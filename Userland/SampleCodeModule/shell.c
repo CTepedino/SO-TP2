@@ -8,7 +8,6 @@ void processCommand(char * readbuf);
 int searchCommand(char * command);
 
 #define COMMAND_LIST_LENGTH 20
-#define PROCCESS_LIST_LENGTH 4
 
 static Command commandList[] = {
         {"help", "Despliega una lista con los programas disponibles.", help},
@@ -34,15 +33,13 @@ static Command commandList[] = {
         //{"phylo","Implementa el problema de los filósofos comensales",phylo}
 };
 
-char * processList[PROCCESS_LIST_LENGTH] = {"loop", "wc", "cat", "filter"};
-
 
 void shellStart(){
     screenInfo(&scr_width, &scr_height);
     textPosition(0, scr_height);
     colorPrint("Bienvenido!\n\n");
     println("Que modulo desea correr?\n");
-    help();
+    executeCommand(commandList[0], 0, NULL, 1);
     println("\nPara correr los modulos, ingrese el comando correspondiente y presione enter.");
     while(1){
         colorPrint("$ ");
@@ -106,32 +103,19 @@ int searchCommand(char * command){
 }
 
 void executeCommand(Command command, int argc, char ** argv, int foreground){
-    if(isAProcess(command)){
-        int fds[2];
-        uint64_t childPid;
-        if(foreground){
-            fds[0] = STDIN;
-            fds[1] = STDOUT;
-        } else {
-            fds[0] = STDIN;
-            fds[1] = -1;
-        }
-        childPid = execve(command.function, command.name, argc, argv, 0, fds);
-        if(foreground){
-            waitForChildren(childPid);
-        }
-    } else{
-        command.function(argc, argv);
+    int fds[2];
+    uint64_t childPid;
+    if(foreground){
+        fds[0] = STDIN;
+        fds[1] = STDOUT;
+    } else {
+        fds[0] = STDIN;
+        fds[1] = -1;
     }
-}   
-
-int isAProcess(Command command){
-    for(int i = 0; i < PROCCESS_LIST_LENGTH; i++){
-        if(strcmp(processList[i], command.name)){
-            return 1;
-        }
+    childPid = execve(command.function, command.name, argc, argv, 0, fds);
+    if(foreground){
+        waitForChildren(childPid);
     }
-    return 0;
 }
 
 
@@ -147,6 +131,7 @@ void help(){
         }
         println(commandList[i].desc);
     }
+    killCurrent();
 }
 
 void argTest(int argc, char ** argv){
@@ -162,6 +147,7 @@ void argTest(int argc, char ** argv){
         }
     }
     println("}");
+    killCurrent();
 }
 
 
@@ -186,6 +172,7 @@ void time(){
     intToStringL(time.minute, buffer, 10, 2);
     print(buffer);
     putChar('\n');
+    killCurrent();
 }
 
 
@@ -218,6 +205,7 @@ void regStatus(){
     else{
         print("No hay un status de registros guardado. Puede guardar uno en cualquier momento apretando la tecla F1\n");
     }
+    killCurrent();
 }
 
 void killShell(int argc, char ** argv){
@@ -225,6 +213,7 @@ void killShell(int argc, char ** argv){
         print("Usage: kill <pid>");
     }
     kill(my_atoi(argv[0]));
+    killCurrent();
 }
 
 void nice(int argc, char ** argv){
@@ -232,6 +221,7 @@ void nice(int argc, char ** argv){
         print("Usage: nice <pid> <priority>");
     }
     setPriority(my_atoi(argv[0]), my_atoi(argv[1]));
+    killCurrent();
 }
 
 void block(int argc, char ** argv){
@@ -239,4 +229,5 @@ void block(int argc, char ** argv){
         print("Usage: kill <pid>");
     }
     blockProcess(my_atoi(argv[0]));
+    killCurrent();
 }
