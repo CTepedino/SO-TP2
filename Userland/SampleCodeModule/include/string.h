@@ -20,6 +20,6 @@ char * strtok(char * str, char delim);
 
 void strcpy(const char * src, char * dst);
 int isVowel(char letter);
-
+uint64_t atoi(const char * string);
 
 #endif

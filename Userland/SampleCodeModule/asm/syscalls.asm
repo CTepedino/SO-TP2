@@ -32,6 +32,7 @@ GLOBAL sys_open_sem
 GLOBAL sys_close_sem
 GLOBAL sys_post_sem
 GLOBAL sys_wait_sem
+GLOBAL sys_open_new_sem
 
 section .text
 
@@ -137,4 +138,6 @@ sys_post_sem:
 
 sys_wait_sem:
     systemcall 28 
+sys_open_new_sem:
+    systemcall 29
 

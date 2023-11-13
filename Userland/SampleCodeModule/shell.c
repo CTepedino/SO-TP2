@@ -28,7 +28,8 @@ static Command commandList[] = {
         {"loop","  Imprime su ID con un saludo cada una determinada cantidad de segundos.",loop},
         {"wc","Cuenta la cantidad de lineas del input",wc},
         {"cat","Imprime el stdin tal como lo recibe", cat},
-        {"filter","Filtra las vocales del input",filter}
+        {"filter","Filtra las vocales del input",filter},
+        {"phylo","Implementa el problema de los filósofos comensales",phylo}
 };
 
 
