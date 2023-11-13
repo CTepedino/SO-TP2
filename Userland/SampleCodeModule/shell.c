@@ -7,7 +7,7 @@ unsigned int scr_height;
 void processCommand(char * readbuf);
 int searchCommand(char * command);
 
-#define COMMAND_LIST_LENGTH 20
+#define COMMAND_LIST_LENGTH 21
 
 static Command commandList[] = {
         {"help", "Despliega una lista con los programas disponibles.", help},
@@ -30,7 +30,7 @@ static Command commandList[] = {
         {"wc", "Cuenta la cantidad de lineas del input", wc},
         {"cat", "Imprime el stdin tal como lo recibe", cat},
         {"filter", "Filtra las vocales del input", filter},
-        //{"phylo","Implementa el problema de los filósofos comensales",phylo}
+        {"phylo","Implementa el problema de los filósofos comensales", phylo}
 };
 
 
@@ -182,7 +182,6 @@ void help(){
         }
         println(commandList[i].desc);
     }
-    killCurrent();
 }
 
 void argTest(int argc, char ** argv){
@@ -198,7 +197,6 @@ void argTest(int argc, char ** argv){
         }
     }
     println("}");
-    killCurrent();
 }
 
 
@@ -223,7 +221,6 @@ void time(){
     intToStringL(time.minute, buffer, 10, 2);
     print(buffer);
     putChar('\n');
-    killCurrent();
 }
 
 
@@ -256,7 +253,6 @@ void regStatus(){
     else{
         print("No hay un status de registros guardado. Puede guardar uno en cualquier momento apretando la tecla F1\n");
     }
-    killCurrent();
 }
 
 void killShell(int argc, char ** argv){
@@ -264,7 +260,6 @@ void killShell(int argc, char ** argv){
         print("Usage: kill <pid>");
     }
     kill(my_atoi(argv[0]));
-    killCurrent();
 }
 
 void nice(int argc, char ** argv){
@@ -272,7 +267,6 @@ void nice(int argc, char ** argv){
         print("Usage: nice <pid> <priority>");
     }
     setPriority(my_atoi(argv[0]), my_atoi(argv[1]));
-    killCurrent();
 }
 
 void block(int argc, char ** argv){
@@ -280,5 +274,4 @@ void block(int argc, char ** argv){
         print("Usage: kill <pid>");
     }
     blockProcess(my_atoi(argv[0]));
-    killCurrent();
 }

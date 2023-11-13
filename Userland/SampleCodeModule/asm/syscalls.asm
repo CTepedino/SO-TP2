@@ -37,6 +37,7 @@ GLOBAL sys_createNewPipe
 GLOBAL sys_closePipe
 GLOBAL sys_readPipe
 GLOBAL sys_writePipe
+GLOBAL sys_openNewSem
 
 section .text
 
@@ -162,3 +163,6 @@ sys_readPipe:
 
 sys_writePipe:
     systemcall 33
+
+sys_openNewSem:
+    systemcall 34
