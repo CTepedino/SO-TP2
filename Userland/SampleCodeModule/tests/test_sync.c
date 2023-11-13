@@ -48,7 +48,7 @@ void my_process_inc(int argc, char *argv[]) {
   return;
 }
 
-void test_sync(int argc, char *argv[]) { //{n, use_sem, 0}
+void test_sync(int argc, char ** argv) { //{n, use_sem, 0}
   uint64_t pids[2 * TOTAL_PAIR_PROCESSES];
 
   if (argc != 2)

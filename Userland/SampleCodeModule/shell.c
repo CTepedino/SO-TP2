@@ -74,13 +74,13 @@ void processCommand(char * readbuf){
         char * argbuf = readbuf + i;
         char * currentArg = strtok(argbuf, ' ');
         while(currentArg != NULL){
-            if(strcmp(currentArg, "&")){
+            if(!strcmp(currentArg, "&")){
                 foreground = 0;
             } else {
                 strcpy(currentArg, args[argc]);
                 argc++;
-                currentArg = strtok(NULL, ' ');
             }
+            currentArg = strtok(NULL, ' ');
         }
         char *argv[MAX_ARG_COUNT];
         for(int i =0; i<MAX_ARG_COUNT; i++){

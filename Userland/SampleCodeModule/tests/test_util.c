@@ -62,7 +62,7 @@ void endless_loop() {
     ;
 }
 
-void endless_loop_print(int argc, char *argv[]) {
+void endless_loop_print() {
   int64_t pid = getPid();
 
   while (1) {
