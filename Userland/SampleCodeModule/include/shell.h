@@ -14,7 +14,7 @@
 
 #define MAX_NAME_LENGTH 20
 #define MAX_DESC_LENGTH 100
-#define MAX_ARG_COUNT 10
+#define MAX_ARG_COUNT 5
 
 typedef struct Command{
     char name[MAX_NAME_LENGTH];

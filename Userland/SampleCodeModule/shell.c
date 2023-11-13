@@ -39,7 +39,7 @@ void shellStart(){
     textPosition(0, scr_height);
     colorPrint("Bienvenido!\n\n");
     println("Que modulo desea correr?\n");
-    executeCommand(commandList[0], 0, NULL, 1);
+    //executeCommand(commandList[0], 0, NULL, 1);
     println("\nPara correr los modulos, ingrese el comando correspondiente y presione enter.");
     while(1){
         colorPrint("$ ");
@@ -50,47 +50,112 @@ void shellStart(){
 }
 
 void processCommand(char * readbuf){
-    char command[MAX_NAME_LENGTH];
+    char cmd1[MAX_NAME_LENGTH];
     int commandIndex = -1;
     int validCommand = 0;
     int i = 0;
     int foreground = 1;
+    int pipe = -1;
     for(; i<MAX_NAME_LENGTH; i++){
         if( readbuf[i] == 0 || readbuf[i]==' '){
-            command[i] = 0;
+            cmd1[i] = 0;
             validCommand = 1;
             break;
         } else {
-            command[i] = readbuf[i];
+            cmd1[i] = readbuf[i];
         }
     }
     if (validCommand){
-        commandIndex = searchCommand(command);
+        commandIndex = searchCommand(cmd1);
     }
-
     if (commandIndex >=0){
         int argc = 0;
         char args[MAX_ARG_COUNT][READBUF_LENGTH];
         char * argbuf = readbuf + i;
         char * currentArg = strtok(argbuf, ' ');
         while(currentArg != NULL){
-            if(!strcmp(currentArg, "&")){
-                foreground = 0;
-            } else {
-                strcpy(currentArg, args[argc]);
-                argc++;
-            }
+            strcpy(currentArg, args[argc]);
+            argc++;
             currentArg = strtok(NULL, ' ');
         }
-        char *argv[MAX_ARG_COUNT];
-        for(int i =0; i<MAX_ARG_COUNT; i++){
-            argv[i] = args[i];
+        for(int j=0; j<argc; j++){
+            if (strcmp(args[j], "|")==0){
+                if (pipe!=-1 || j==argc-1){
+                    println("sintaxis invalida");
+                    return;
+                } else {
+                    pipe = j;
+                }
+            }
+            if (strcmp(args[j], "&")==0){
+                if (j!=argc-1){
+                    println("sintaxis invalida");
+                    return;
+                } else {
+                    foreground=0;
+                }
+            }
         }
-        executeCommand(commandList[commandIndex], argc, argv, foreground);
+        if(pipe==-1) {
+            char *argv[MAX_ARG_COUNT];
+            for (i = 0; i < MAX_ARG_COUNT; i++) {
+                argv[i] = args[i];
+            }
+            if (!foreground){
+                argc--;
+            }
+            int fds[2];
+            if(foreground){
+                fds[0] = STDIN;
+                fds[1] = STDOUT;
+            } else {
+                fds[0] = -1;
+                fds[1] = STDOUT;
+            }
+            int pid = execve(commandList[commandIndex].function, commandList[commandIndex].name, argc, argv, 0, fds);
+            if (foreground){
+                waitForChildren(pid);
+            }
+        } else {
+            char * cmd2;
+            cmd2 = args[pipe+1];
+            int commandIndex2;
+            commandIndex2 = searchCommand(cmd2);
+            if (commandIndex2==-1){
+                print(cmd2);
+                println(": comando invalido");
+                return;
+            } else {
+                char *argv1[MAX_ARG_COUNT];
+                char * argv2[MAX_ARG_COUNT];
+                int argc1=0;
+                int argc2=0;
+                for(; argc1<pipe;argc1++){
+                    argv1[argc1]=args[argc1];
+                }
+                for(int aux = argc1; aux<argc;aux++){
+                    argv2[argc2]=args[aux];
+                    argc2++;
+                }
+                if (!foreground){
+                    argc2--;
+                }
+                int pipeId = createNewPipe();
+                int fd[2] = {pipeId, STDOUT};
+                execve(commandList[commandIndex].function, commandList[commandIndex].name, argc1, argv1, 0, fd);
+                fd[0] = STDIN;
+                fd[1] = pipeId;
+                int pid =execve(commandList[commandIndex2].function, commandList[commandIndex2].name, argc2, argv2, 0, fd);
+                if (foreground) {
+                    waitForChildren(pid);
+                }
+            }
+        }
     } else {
-        print(command);
+        print(cmd1);
         println(": comando invalido");
     }
+
 }
 
 int searchCommand(char * command){
@@ -102,21 +167,7 @@ int searchCommand(char * command){
     return -1;
 }
 
-void executeCommand(Command command, int argc, char ** argv, int foreground){
-    int fds[2];
-    uint64_t childPid;
-    if(foreground){
-        fds[0] = STDIN;
-        fds[1] = STDOUT;
-    } else {
-        fds[0] = STDIN;
-        fds[1] = -1;
-    }
-    childPid = execve(command.function, command.name, argc, argv, 0, fds);
-    if(foreground){
-        waitForChildren(childPid);
-    }
-}
+
 
 
 void help(){

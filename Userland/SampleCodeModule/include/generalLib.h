@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define EOF (-1)
 
 #define STDIN 0
 #define STDOUT 1
