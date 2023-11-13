@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 void read(uint64_t color, char *buffer, uint64_t length){
-    if (color==STDIN){
+    /*if (color==STDIN){
         Process * current = getCurrentProcess();
         if(current->input != STDIN){
             read_from_pipe(current->input, buffer, length);
@@ -11,6 +11,13 @@ void read(uint64_t color, char *buffer, uint64_t length){
                     buffer[i]=getKey();
                 } while(buffer[i]==0);
             }
+        }
+
+    }*/
+    for(int i = 0; i< length ; i++){
+        buffer[i] = getAscii();
+        if (buffer[i]==EOF){
+            return;
         }
     }
 }

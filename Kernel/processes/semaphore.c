@@ -58,6 +58,7 @@ int openNewSem(unsigned int value){
             while(1){
                 if (findSem(id)==-1){
                     openSem(id, value);
+                    return id;
                 }
                 id++;
             }

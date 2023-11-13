@@ -26,6 +26,5 @@
 #define STDERR 2
 #define COLOR 3
 
-#define ESC 27
 
 #endif
