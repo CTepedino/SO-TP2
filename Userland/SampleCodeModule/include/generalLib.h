@@ -66,10 +66,15 @@ void waitForChildren(uint64_t pid);
 void yield();
 void schedulerInfo();
 
-
 int semOpen(int id, unsigned int value);
 void semClose(int id);
 void semPost(int id);
 void semWait(int id);
+
+int openPipe(int id, uint8_t mode);
+int createNewPipe();
+void closePipe(int id);
+int readPipe(int id, char * buffer, uint64_t length);
+int writePipe(int id, const char * string,uint64_t count);
 
 #endif

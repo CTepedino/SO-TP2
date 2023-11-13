@@ -163,8 +163,8 @@ void unblockProcess(uint64_t pid){
     sys_unblockProcess(pid);
 }
 
-void waitForChildren(uint64_t pid){
-    sys_waitForChildren(pid);
+void waitForChildren(uint64_t childPid){
+    sys_waitForChildren(childPid);
 }
 
 void yield(){
@@ -191,3 +191,24 @@ void semPost(int id){
 void semWait(int id){
     sys_waitSem(id);
 }
+
+int openPipe(int id, uint8_t mode){
+    sys_openPipe(id, mode);
+}
+
+int createNewPipe(){
+    sys_createNewPipe();
+}
+
+void closePipe(int id){
+    sys_closePipe(id);
+}
+
+int readPipe(int id, char * buffer, uint64_t length){
+    sys_readPipe(id, buffer, length);
+}
+
+int writePipe(int id, const char * string,uint64_t count){
+    sys_writePipe(id, string, count);
+}
+

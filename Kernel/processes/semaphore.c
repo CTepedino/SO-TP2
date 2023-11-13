@@ -1,15 +1,5 @@
 #include <semaphore.h>
 
-typedef struct Node{
-    uint64_t pid;
-    struct Node * next;
-    struct Node * prev;
-} Node;
-
-typedef struct pidList{
-    Node * first;
-    Node * last;
-} pidList;
 
 typedef struct Semaphore{
     uint64_t id;
@@ -22,9 +12,6 @@ typedef struct Semaphore{
 Semaphore * semaphores[MAX_SEMAPHORES] = {NULL};
 
 int findSem(int id);
-void addToPidList(pidList * list, uint64_t pid);
-void removeFromPidList(pidList * list, uint64_t pid);
-void freePidList(pidList * list);
 void lockSem(Semaphore * sem);
 void unlockSem(Semaphore * sem);
 
@@ -39,12 +26,8 @@ int openSem(int id, unsigned int value){
             semaphores[i]->id = id;
             semaphores[i]->value = value;
             semaphores[i]->mutex = 0;
-            semaphores[i]->waitingList = memAlloc(sizeof(pidList));
-            semaphores[i]->waitingList->first = NULL;
-            semaphores[i]->waitingList->last = NULL;
-            semaphores[i]->mutexList = memAlloc(sizeof(pidList));
-            semaphores[i]->mutexList->first = NULL;
-            semaphores[i]->mutexList->last = NULL;
+            semaphores[i]->waitingList = initializePidList();
+            semaphores[i]->mutexList = initializePidList();
             return 0;
         }
     }
@@ -127,54 +110,6 @@ int findSem(int id){
     return -1;
 }
 
-void addToPidList(pidList * list, uint64_t pid){
-    Node * n = memAlloc(sizeof(Node));
-    n->pid = pid;
-    n->next = NULL;
-    if (list->first==NULL){
-        n->prev = NULL;
-        list->first = n;
-        list->last = n;
-    } else {
-        n->prev = list->last;
-        list->last->next = n;
-        list->last = n;
-    }
-}
-
-void removeFromPidList(pidList * list, uint64_t pid){
-    Node * curr = list->first;
-    while (curr != NULL) {
-        if (curr->pid == pid) {
-            break;
-        }
-        curr = curr->next;
-    }
-    if (curr!= NULL){
-        if (list->first==curr){
-            list->first = curr->next;
-        } else {
-            curr->prev->next = curr->next;
-        }
-        if (list->last==curr){
-            list->last = curr->prev;
-        } else {
-            curr->next->prev = curr->prev;
-        }
-        memFree(curr);
-    }
-
-}
-
-void freePidList(pidList * list){
-    Node * curr = list->first;
-    Node * next;
-    while(curr!=NULL){
-        next = curr->next;
-        memFree(curr);
-        curr = next;
-    }
-}
 
 void lockSem(Semaphore *sem) {
     while (_xchg(&(sem->mutex), 1)) {

@@ -5,6 +5,7 @@
 #include <lib.h>
 #include <memoryManager.h>
 #include <process.h>
+#include <pidList.h>
 
 #define MAX_SEMAPHORES 100
 
