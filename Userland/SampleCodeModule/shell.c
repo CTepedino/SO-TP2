@@ -133,7 +133,7 @@ void processCommand(char * readbuf){
                 for(; argc1<pipe;argc1++){
                     argv1[argc1]=args[argc1];
                 }
-                for(int aux = argc1; aux<argc;aux++){
+                for(int aux = argc1+2; aux<argc;aux++){
                     argv2[argc2]=args[aux];
                     argc2++;
                 }
