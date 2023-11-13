@@ -47,11 +47,11 @@ static int sys_closeSem(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, 
 static int sys_postSem(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 static int sys_waitSem(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 
-static int sys_create_pipe(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
-static int sys_destroy_pipe(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
-static int sys_read_from_pipe(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
-static int sys_write_to_pipe(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
-static int sys_signal_eof(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
+static int sys_openPipe(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
+static int sys_createNewPipe(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
+static int sys_closePipe(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
+static int sys_readPipe(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
+static int sys_writePipe(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 
 
 static int (*syscalls[])(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) = {
@@ -59,7 +59,7 @@ static int (*syscalls[])(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx,
         sys_putCircle ,sys_beep,sys_sleep, sys_getRTC, sys_getREGS, sys_malloc, sys_free, sys_memoryInfo,
         sys_addProcess, sys_killProcess, sys_killCurrentProcess, sys_getCurrentPid, sys_setProcessPriority,
          sys_blockProcess, sys_unblockProcess, sys_waitForChildren, sys_yield, sys_schedulerInfo, sys_openSem, sys_closeSem,
-        sys_postSem, sys_waitSem, sys_create_pipe, sys_destroy_pipe, sys_read_from_pipe, sys_write_to_pipe, sys_signal_eof,
+        sys_postSem, sys_waitSem, sys_openPipe, sys_createNewPipe, sys_closePipe, sys_readPipe, sys_writePipe
 };
 
 int syscallDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t rax){
@@ -67,12 +67,9 @@ int syscallDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, ui
 }
 
 
-//TODO: syscall bloqueante?
+
 static int sys_read(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
-    _sti();
-    read(rdi,(char *) rsi,rdx);
-    _cli();
-    return 0;
+    return fRead((char *) rdi,rsi);
 }
 
 static int sys_screenInfo(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
@@ -85,13 +82,11 @@ static int sys_textPosition(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t r
     return 0;
 }
 
-//TODO: syscall bloqueante?
 static int sys_getAllKeys(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
     getAllKeys((char *) rdi);
     return 0;
 }
 
-//TODO: syscall bloqueante?
 static int sys_getReleasedKeys(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
     getReleasedKeys((char *) rdi);
     return 0;
@@ -99,8 +94,7 @@ static int sys_getReleasedKeys(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_
 
 
 static int sys_write(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
-    write(rdi,(const char *)rsi,rdx);
-    return 0;
+    return fWrite(rdi,(const char *)rsi,rdx);
 }
 
 static int sys_putRectangle(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
@@ -154,7 +148,7 @@ static int sys_memoryInfo(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx
 }
 
 static int sys_addProcess(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
-    return addProcess((void *)rdi, (char *) rsi, rdx, (char **)rcx, r8,(unsigned int *) r9);
+    return addProcess((void *)rdi, (char *) rsi, rdx, (char **)rcx, r8,(int *) r9);
 }
 
 static int sys_killProcess(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
@@ -220,24 +214,24 @@ static int sys_waitSem(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, u
     return 0;
 }
 
-static int sys_create_pipe(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
-    return create_pipe((unsigned int) rdi);
+static int sys_openPipe(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+    return openPipe(getCurrentPid(), rdi, rsi);
 }
 
-static int sys_destroy_pipe(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
-    destroy_pipe((unsigned int) rdi);
+static int sys_createNewPipe(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+    return createNewPipe();
+}
+
+static int sys_closePipe(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+    closePipe(getCurrentPid(), rdi);
     return 0;
 }
 
-static int sys_read_from_pipe(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
-    return read_from_pipe((unsigned int) rdi, (char *) rsi, (unsigned int) rdx);
+static int sys_readPipe(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+    return readPipe(rdi, (char *) rsi, rdx);
 }
 
-static int sys_write_to_pipe(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
-    return write_to_pipe((unsigned int) rdi, (const char *) rsi, (unsigned int) rdx);
+static int sys_writePipe(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+    return writePipe(rdi, (char *) rsi, rdx);
 }
 
-static int sys_signal_eof(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
-    signal_eof((unsigned int) rdi);
-    return 0;
-}

@@ -27,7 +27,7 @@ void colorPrint(const char * string){
 
 char getChar(){
     char c;
-    sys_read(STDIN,&c,1);
+    sys_read(&c,1);
     return c;
 }
 
@@ -135,7 +135,7 @@ void memoryInfo(){
     sys_memoryInfo();
 }
 
-uint64_t execve(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority, unsigned int fds[]){
+uint64_t execve(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority, int fds[]){
     return sys_addProcess(program, name, argc, argv, priority, fds);
 }
 

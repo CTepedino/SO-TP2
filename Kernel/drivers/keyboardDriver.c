@@ -59,7 +59,7 @@ void keyboard_handler(uint64_t * RSP){
             code = code < KEYMAP_LEN ? keyboard_map[code] : 0;
             if (code=='c'){
                 cleanBuffer();
-                //killCurrentFGProcess();
+                killForegroundProcess();
             } else if (code=='d' && size < BUFFER_LEN-1){
                 writeKey(EOF);
             }

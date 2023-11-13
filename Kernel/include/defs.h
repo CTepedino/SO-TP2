@@ -21,10 +21,14 @@
 #define ACS_DATA        (ACS_PRESENT | ACS_DSEG | ACS_WRITE)
 #define ACS_STACK       (ACS_PRESENT | ACS_DSEG | ACS_WRITE)
 
+#define EOF -1
+
+#define WHITE 1
+#define RED 2
+#define GREEN 3
+
+#define DEFAULT_FD_COUNT 2
 #define STDIN 0
 #define STDOUT 1
-#define STDERR 2
-#define COLOR 3
-
 
 #endif

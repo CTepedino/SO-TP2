@@ -27,11 +27,11 @@ GLOBAL sys_openSem
 GLOBAL sys_closeSem
 GLOBAL sys_postSem
 GLOBAL sys_waitSem
-GLOBAL sys_create_pipe
-GLOBAL sys_destroy_pipe
-GLOBAL sys_read_from_pipe
-GLOBAL sys_write_to_pipe
-GLOBAL sys_signal_eof
+GLOBAL sys_openPipe
+GLOBAL sys_createNewPipe
+GLOBAL sys_closePipe
+GLOBAL sys_readPipe
+GLOBAL sys_writePipe
 
 section .text
 
@@ -128,18 +128,17 @@ sys_postSem:
 sys_waitSem:
     systemcall 28
 
-
-sys_create_pipe:
+sys_openPipe:
     systemcall 29
 
-sys_destroy_pipe:
+sys_createNewPipe:
     systemcall 30
 
-sys_read_from_pipe:
+sys_closePipe:
     systemcall 31
 
-sys_write_to_pipe:
+sys_readPipe:
     systemcall 32
 
-sys_signal_eof:
+sys_writePipe:
     systemcall 33

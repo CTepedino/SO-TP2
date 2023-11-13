@@ -9,7 +9,12 @@
 #include <processQueue.h>
 
 #define STACK_SIZE (1024*4)
+#define MAX_PIPE_COUNT 50
 
+typedef struct FileDescriptors{
+    int input;
+    int output;
+}FileDescriptors;
 
 enum status {Ready=0, Running, Blocked, WaitingForChildren, WaitingForSem};
 
@@ -22,12 +27,10 @@ typedef struct Process{
     void * RBP;
     void * RSP;
     uint64_t childrenCount;
-    unsigned int input;
-    unsigned int output;
-    unsigned int foreground;
+    FileDescriptors fds;
 } Process;
 
-Process * initializeProcess(uint64_t pid, uint64_t ppid, char * name, int argc, char ** argv, void (*program)(int argc, char ** argv), unsigned int fds[]);
+Process * initializeProcess(uint64_t pid, uint64_t ppid, char * name, int argc, char ** argv, void (*program)(int argc, char ** argv), int fds[]);
 void freeProcess(Process * process);
 
 

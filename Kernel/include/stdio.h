@@ -9,8 +9,11 @@
 #include <process.h>
 #include <pipe.h>
 
-void read(uint64_t color, char *buffer, uint64_t length);
-void write(uint64_t color, const char * string, uint64_t count);
+uint64_t fRead(char * buffer, uint64_t length);
+uint64_t fWrite(uint64_t color, const char * string, uint64_t count);
+
+uint64_t read(char *buffer, uint64_t length);
+uint64_t write(uint64_t color, const char * string, uint64_t count);
 
 void screenInfo(uint32_t * width, uint32_t * height);
 

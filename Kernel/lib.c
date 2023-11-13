@@ -103,7 +103,7 @@ uint32_t uIntLen(uint64_t num, uint8_t base){
 }
 
 void printString(const char * s){
-    write(1, s, strlen(s));
+    fWrite(1, s, strlen(s));
 }
 
 void printInt(uint64_t n){

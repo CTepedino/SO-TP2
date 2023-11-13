@@ -6,7 +6,7 @@
 #include <memoryManager.h>
 #include <process.h>
 
-#define MAX_SEMAPHORES 50
+#define MAX_SEMAPHORES 100
 
 
 int openSem(int id, unsigned int value);

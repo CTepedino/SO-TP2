@@ -3,21 +3,21 @@
 
 #include <semaphore.h>
 #include <memoryManager.h>
+#include <scheduler.h>
 #include <stdint.h>
 #include <lib.h>
-#include <stdbool.h>
 
-#define INVALID_PIPE_ID -1
-#define EOF -1
+#define MODE_READ 0
+#define MODE_WRITE 1
+#define PIPE_BUFFER_SIZE (1024*4)
 
-void signal_eof(unsigned int pipe_id);
-int create_pipe_available();
+int createNewPipe();
+int openPipe(int64_t pid, int id, uint8_t mode);
+void closePipe(int64_t pid, int id);
 
-int create_pipe(unsigned int pipe_id);
-void destroy_pipe(unsigned int pipe_id);
+int readPipe(int id, char * buffer, uint64_t length);
+int writePipe(int id, const char * string, uint64_t count);
 
-int read_from_pipe(unsigned int pipe_id, char * dest, unsigned int count);
-int write_to_pipe(unsigned int pipe_id, const char * src, unsigned int count);
 
 
 

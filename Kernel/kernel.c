@@ -59,9 +59,6 @@ void * getSampleCodeModuleAddress(){
 void writeMatrix(uint32_t x, uint32_t y, uint32_t width, uint32_t height,const char matrix[height][width]);
 
 
-void test(){
-    printString("inTest");
-}
 
 int main(){
 
@@ -69,14 +66,16 @@ int main(){
     initializeScheduler();
     initializeKeyboardHandler();
 
-	unsigned int fds[2] = {STDIN, STDOUT};
+
+	int fds[2] = {STDIN,STDOUT};
 
     addProcess((EntryPoint)sampleCodeModuleAddress, "shell", 0, NULL, 0, fds);
-    addProcess(&test, "test", 0, NULL, 2,fds);
 
     load_idt();
     setTimeFormat();
+
     while(1);
+
     ((EntryPoint) sampleCodeModuleAddress)();
     return 0;
 }

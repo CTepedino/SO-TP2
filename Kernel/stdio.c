@@ -1,52 +1,53 @@
 #include <stdio.h>
 
-void read(uint64_t color, char *buffer, uint64_t length){
-    /*if (color==STDIN){
-        Process * current = getCurrentProcess();
-        if(current->input != STDIN){
-            read_from_pipe(current->input, buffer, length);
-        } else {
-            for(int i=0;i<length;i++){
-                do {
-                    buffer[i]=getKey();
-                } while(buffer[i]==0);
-            }
-        }
+uint64_t fRead(char * buffer, uint64_t length){
+    int fd = getCurrentProcess()->fds.input;
+    if (fd == STDIN){
+        read(buffer, length);
+    } else if (fd > DEFAULT_FD_COUNT){
+        return readPipe(fd, buffer, length);
+    }
+    return 0;
+}
 
-    }*/
+uint64_t fWrite(uint64_t color, const char * string, uint64_t count){
+    int fd = getCurrentProcess()->fds.output;
+    if (fd==STDOUT){
+        write(color, string, count);
+    } else if (fd > DEFAULT_FD_COUNT){
+        return writePipe(fd, string, count);
+    }
+    return 0;
+}
+
+
+uint64_t read(char *buffer, uint64_t length){
     for(int i = 0; i< length ; i++){
         buffer[i] = getAscii();
         if (buffer[i]==EOF){
-            return;
+            return i+1;
         }
     }
+    return length;
 }
 
-void write(uint64_t color, const char * string, uint64_t count){
+uint64_t write(uint64_t color, const char * string, uint64_t count){
     uint32_t charColor;
     switch(color){
-        case STDOUT:
-            charColor = 0xFFFFFF;
-            break;
-        case STDERR:
+        case RED:
             charColor = 0xFF0000;
             break;
-        case COLOR:
+        case GREEN:
             charColor = 0x378805;
             break;
         default:
-            return;
+            charColor = 0xFFFFFF;
+            break;
     }
-    Process * current = getCurrentProcess();
-    if(current->output != STDOUT){
-        write_to_pipe(current->output, string, count);
-    } else {
-        if(current->foreground){
-            for(int i=0;i<count;i++){
-                putChar(charColor, 0, string[i]);
-            }
-        }
+    for(int i=0;i<count;i++){
+        putChar(charColor, 0, string[i]);
     }
+    return count;
 }
 
 void screenInfo(uint32_t * width, uint32_t * height){
