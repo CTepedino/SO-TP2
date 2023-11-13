@@ -199,7 +199,7 @@ void schedulerInfo(){
             printString("; RBP: ");
             printInt((uint64_t)process->RBP);
             printString(";fg: ");
-            printString(process->fd.input==STDIN? "fd" : "bg");*/
+            printString(process->fds.input==STDIN? "fd" : "bg");
             printString("\n");
         }
     }
