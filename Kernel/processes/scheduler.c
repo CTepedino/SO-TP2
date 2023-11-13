@@ -6,6 +6,7 @@ Process * currentProcess;
 Process * dummyProcess;
 int quantum;
 int remainingQuantum;
+int killForeground;
 
 void dummy(int argc, char ** argv);
 Process * findProcess(uint64_t pid);
@@ -14,7 +15,8 @@ void initializeScheduler(){
     for(int i = 0; i < PRIORITY_LEVELS; i++){
         queues[i] = initializeProcessQueue();
     }
-    dummyProcess = initializeProcess(DUMMY_PID, DUMMY_PID, "dummy", 0, NULL, &dummy);
+    int fds[2] = {0,1};
+    dummyProcess = initializeProcess(DUMMY_PID, DUMMY_PID, "dummy", 0, NULL, &dummy, fds);
     usedPIDs[DUMMY_PID] = 1;
 }
 
@@ -53,10 +55,14 @@ void * contextSwitch(void * RSP){
         currentProcess = dummyProcess;
     }
     currentProcess->status = Running;
+    if (killForeground && currentProcess != dummyProcess && currentProcess->fds.input == STDIN){
+        killForeground = 0;
+        killCurrentProcess();
+    }
     return currentProcess->RSP;
 }
 
-uint64_t addProcess(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority){
+uint64_t addProcess(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority, int fds[]){
     uint64_t pid = 0;
     for(int i = DUMMY_PID+1; i < MAX_PROCESS_COUNT; i++){
         if (usedPIDs[i]==0){
@@ -69,7 +75,7 @@ uint64_t addProcess(void (* program)(int argc, char ** argv), char *name, int ar
         return 0;
     }
     uint64_t ppid = currentProcess == NULL ? DUMMY_PID : currentProcess->pid;
-    Process * process = initializeProcess(pid, ppid, name, argc, argv, program);
+    Process * process = initializeProcess(pid, ppid, name, argc, argv, program, fds);
     currentProcess->childrenCount++;
     if (priority >= PRIORITY_LEVELS){
         priority = PRIORITY_LEVELS-1;
@@ -90,6 +96,7 @@ void killProcess(uint64_t pid){
     if (process==NULL){
         return;
     }
+    removeForAllSemaphores(pid);
     Process * parent = findProcess(process->ppid);
     if (parent != NULL){
         parent->childrenCount--;
@@ -104,6 +111,10 @@ void killProcess(uint64_t pid){
 
 void killCurrentProcess(){
     killProcess(currentProcess->pid);
+}
+
+void killForegroundProcess(){
+    killForeground = 1;
 }
 
 uint64_t getCurrentPid(){
@@ -202,3 +213,8 @@ void dummy(int argc, char ** argv){
         _hlt();
     }
 }
+
+Process * getCurrentProcess(){
+    return currentProcess;
+}
+

@@ -55,7 +55,7 @@ void * memAlloc(size_t n);
 void memFree(void * ptr);
 void memoryInfo();
 
-uint64_t execve(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority);
+uint64_t execve(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority, int fds[]);
 void kill(uint64_t pid);
 void killCurrent();
 uint64_t getPid();
@@ -67,10 +67,10 @@ void yield();
 void schedulerInfo();
 
 
-int sem_open(unsigned int sem_id, unsigned int value);
-int sem_close(unsigned int sem_id);
-int sem_post(unsigned int sem_id);
-int sem_wait(unsigned int sem_id);
+int semOpen(int id, unsigned int value);
+void semClose(int id);
+void semPost(int id);
+void semWait(int id);
 void wc(int argc, char *argv[]);
 void cat(int argc, char *argv[]);
 void filter(int argc, char *argv[]);

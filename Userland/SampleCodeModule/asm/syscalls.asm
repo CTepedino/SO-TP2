@@ -27,12 +27,16 @@ GLOBAL sys_blockProcess
 GLOBAL sys_unblockProcess
 GLOBAL sys_waitForChildren 
 GLOBAL sys_yield
-GLOBAL sys_schedulerInfo  
-GLOBAL sys_open_sem
-GLOBAL sys_close_sem
-GLOBAL sys_post_sem
-GLOBAL sys_wait_sem
-GLOBAL sys_open_new_sem
+GLOBAL sys_schedulerInfo
+GLOBAL sys_openSem
+GLOBAL sys_closeSem
+GLOBAL sys_postSem
+GLOBAL sys_waitSem
+GLOBAL sys_openPipe
+GLOBAL sys_createNewPipe
+GLOBAL sys_closePipe
+GLOBAL sys_readPipe
+GLOBAL sys_writePipe
 
 section .text
 
@@ -127,17 +131,29 @@ sys_yield:
 sys_schedulerInfo:
     systemcall 24
     
-sys_open_sem:
+sys_openSem:
     systemcall 25
 
-sys_close_sem:
+sys_closeSem:
     systemcall 26
 
-sys_post_sem:
-    systemcall 27 
+sys_postSem:
+    systemcall 27
 
-sys_wait_sem:
-    systemcall 28 
-sys_open_new_sem:
+sys_waitSem:
+    systemcall 28
+
+sys_openPipe:
     systemcall 29
 
+sys_createNewPipe:
+    systemcall 30
+
+sys_closePipe:
+    systemcall 31
+
+sys_readPipe:
+    systemcall 32
+
+sys_writePipe:
+    systemcall 33

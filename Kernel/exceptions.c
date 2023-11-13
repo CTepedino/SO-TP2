@@ -1,11 +1,10 @@
 #include <videoDriver.h>
 #include <lib.h>
 #include <interrupts.h>
+#include <stdio.h>
 #define ZERO_EXCEPTION_ID 0x0
 #define INVALID_OP_ID 6
 
-extern void read(uint64_t fd, char *buffer, uint64_t length);
-extern void write(uint64_t fd, const char * string, uint64_t count);
 
 extern uint64_t getSampleCodeModuleAddress();
 extern uint64_t getStackBase();
@@ -38,7 +37,7 @@ void exceptionDispatcher(int exception, uint64_t * RSP) {
     char rstMsg[] = "Presione cualquier tecla para reiniciar.";
     _sti();
     write(2, rstMsg, strlen(rstMsg));
-    read(0, rstMsg, 1);
+    read(rstMsg, 1);
     _cli();
 
     uint32_t w,h;

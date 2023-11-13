@@ -4,6 +4,7 @@ GLOBAL getTime
 GLOBAL forceTimerTick
 GLOBAL initializeStack
 GLOBAL _xchg
+GLOBAL _xadd
 
 section .text
 
@@ -116,8 +117,8 @@ initializeStack:
 	mov rsp, r14
 	mov rbp, r15
 	ret
-	
-	_xchg:
-	mov rax, rsi
-	xchg [rdi], eax
-	ret
+
+_xchg:
+  mov rax, rsi
+  xchg [rdi], eax
+  ret

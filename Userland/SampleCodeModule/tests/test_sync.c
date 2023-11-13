@@ -1,6 +1,6 @@
 #include <test_util.h>
 
-#define SEM_ID 1
+#define SEM_ID 10
 #define TOTAL_PAIR_PROCESSES 2
 
 int64_t global; // shared memory
@@ -28,7 +28,7 @@ void my_process_inc(int argc, char *argv[]) {
     return;
 
   if (use_sem)
-    if (sem_open(SEM_ID, 1) < 0) {
+    if (semOpen(SEM_ID, 1) < 0) {
       print("test_sync: ERROR opening semaphore\n");
       return;
     }
@@ -36,14 +36,14 @@ void my_process_inc(int argc, char *argv[]) {
   uint64_t i;
   for (i = 0; i < n; i++) {
     if (use_sem)
-      sem_wait(SEM_ID);
+      semWait(SEM_ID);
     slowInc(&global, inc);
     if (use_sem)
-      sem_post(SEM_ID);
+      semPost(SEM_ID);
   }
 
   if (use_sem)
-    sem_close(SEM_ID);
+    semClose(SEM_ID);
 
   return;
 }
@@ -56,13 +56,14 @@ void test_sync(int argc, char *argv[]) { //{n, use_sem, 0}
 
   char *argvDec[] = {argv[0], "-1", argv[1], NULL};
   char *argvInc[] = {argv[0], "1", argv[1], NULL};
+  unsigned int fds[2] = {STDIN, STDOUT};
 
   global = 0;
 
   uint64_t i;
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-    pids[i] = execve(&my_process_inc, "my_process_inc", 3, argvDec, 0);
-    pids[i + TOTAL_PAIR_PROCESSES] = execve(&my_process_inc, "my_process_inc", 3, argvInc, 0);
+    pids[i] = execve(&my_process_inc, "my_process_inc", 3, argvDec, 0, fds);
+    pids[i + TOTAL_PAIR_PROCESSES] = execve(&my_process_inc, "my_process_inc", 3, argvInc, 0, fds);
   }
 
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {

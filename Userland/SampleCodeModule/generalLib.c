@@ -27,7 +27,7 @@ void colorPrint(const char * string){
 
 char getChar(){
     char c;
-    sys_read(STDIN,&c,1);
+    sys_read(&c,1);
     return c;
 }
 
@@ -135,8 +135,8 @@ void memoryInfo(){
     sys_memoryInfo();
 }
 
-uint64_t execve(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority){
-    return sys_addProcess(program, name, argc, argv, priority);
+uint64_t execve(void (* program)(int argc, char ** argv), char *name, int argc, char ** argv, uint8_t priority, int fds[]){
+    return sys_addProcess(program, name, argc, argv, priority, fds);
 }
 
 void kill(uint64_t pid){
@@ -176,20 +176,20 @@ void schedulerInfo(){
 }
 
 
-int sem_open(unsigned int sem_id, unsigned int value){
-    return sys_open_sem(sem_id, value);
+int semOpen(int id, unsigned int value){
+    return sys_openSem(id, value);
 }
 
-int sem_close(unsigned int sem_id){
-    return sys_close_sem(sem_id);
+void semClose(int id){
+    sys_closeSem(id);
 }
 
-int sem_post(unsigned int sem_id){
-    return sys_post_sem(sem_id);
+void semPost(int id){
+    sys_postSem(id);
 }
 
-int sem_wait(unsigned int sem_id){
-    return sys_wait_sem(sem_id);
+void semWait(int id){
+    sys_waitSem(id);
 }
 
 void wc(int argc, char *argv[]) {

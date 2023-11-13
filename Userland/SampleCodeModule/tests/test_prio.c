@@ -13,10 +13,11 @@ int64_t prio[TOTAL_PROCESSES] = {LOWEST, MEDIUM, HIGHEST};
 void test_prio() {
   int64_t pids[TOTAL_PROCESSES];
   char *argv[] = {0};
+  unsigned int fds[2] = {STDIN, STDOUT};
   uint64_t i;
 
   for (i = 0; i < TOTAL_PROCESSES; i++){
-    execve(&endless_loop_print, "endless_loop_print" , 1, (char**) argv, LOWEST);
+    execve(&endless_loop_print, "endless_loop_print" , 1, (char**) argv, LOWEST, fds);
     pids[i] = getPid();
   }
 
