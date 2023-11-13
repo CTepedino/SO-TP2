@@ -164,8 +164,8 @@ void unblockProcess(uint64_t pid){
     sys_unblockProcess(pid);
 }
 
-void waitForChildren(uint64_t pid){
-    sys_waitForChildren(pid);
+void waitForChildren(uint64_t childPid){
+    sys_waitForChildren(childPid);
 }
 
 void yield(){

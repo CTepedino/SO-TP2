@@ -26,7 +26,7 @@ uint64_t sys_getCurrentPid();
 void sys_setProcessPriority(uint64_t pid, uint64_t priority);
 void sys_blockProcess(uint64_t pid);
 void sys_unblockProcess(uint64_t pid);
-void sys_waitForChildren(uint64_t pid);
+void sys_waitForChildren(uint64_t childPid);
 void sys_yield();
 void sys_schedulerInfo();
 int sys_openSem(int id, unsigned int value);

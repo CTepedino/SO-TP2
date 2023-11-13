@@ -66,7 +66,6 @@ void waitForChildren(uint64_t pid);
 void yield();
 void schedulerInfo();
 
-
 int semOpen(int id, unsigned int value);
 void semClose(int id);
 void semPost(int id);
