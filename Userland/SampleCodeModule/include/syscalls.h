@@ -33,6 +33,7 @@ int sys_openSem(int id, unsigned int value);
 void sys_closeSem(int id);
 void sys_postSem(int id);
 void sys_waitSem(int id);
+int sys_openNewSem(unsigned int value);
 int sys_openPipe(int id, uint8_t mode);
 int sys_createNewPipe();
 void sys_closePipe(int id);

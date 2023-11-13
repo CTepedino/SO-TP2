@@ -71,6 +71,7 @@ int semOpen(int id, unsigned int value);
 void semClose(int id);
 void semPost(int id);
 void semWait(int id);
+int semOpenNew(unsigned int value);
 
 int openPipe(int id, uint8_t mode);
 int createNewPipe();

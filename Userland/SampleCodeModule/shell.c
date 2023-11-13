@@ -7,7 +7,7 @@ unsigned int scr_height;
 void processCommand(char * readbuf);
 int searchCommand(char * command);
 
-#define COMMAND_LIST_LENGTH 20
+#define COMMAND_LIST_LENGTH 21
 
 static Command commandList[] = {
         {"help", "Despliega una lista con los programas disponibles.", help},
@@ -30,7 +30,7 @@ static Command commandList[] = {
         {"wc", "Cuenta la cantidad de lineas del input", wc},
         {"cat", "Imprime el stdin tal como lo recibe", cat},
         {"filter", "Filtra las vocales del input", filter},
-        //{"phylo","Implementa el problema de los filósofos comensales",phylo}
+        {"phylo","Implementa el problema de los filósofos comensales", phylo}
 };
 
 

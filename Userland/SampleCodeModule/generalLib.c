@@ -192,6 +192,10 @@ void semWait(int id){
     sys_waitSem(id);
 }
 
+int semOpenNew(unsigned int value){
+    return sys_openNewSem(value);
+}
+
 int openPipe(int id, uint8_t mode){
     return sys_openPipe(id, mode);
 }
