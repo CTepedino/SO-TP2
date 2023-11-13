@@ -36,6 +36,7 @@ void * contextSwitch(void * RSP){
         startIterator(queues[i]);
         while(hasNext(queues[i])){
             currentProcess = next(queues[i]);
+
             if (currentProcess->status == WaitingForChildren){
                 startPidIterator(currentProcess->waitingList);
                 while(hasNextPid(currentProcess->waitingList)){
@@ -50,6 +51,7 @@ void * contextSwitch(void * RSP){
                     currentProcess->status = Ready;
                 }
             }
+
             if (currentProcess->status == Ready){
                 foundNext = 1;
                 remove(queues[i], currentProcess->pid);
@@ -87,7 +89,6 @@ uint64_t addProcess(void (* program)(int argc, char ** argv), char *name, int ar
     }
     uint64_t ppid = currentProcess == NULL ? DUMMY_PID : currentProcess->pid;
     Process * process = initializeProcess(pid, ppid, name, argc, argv, program, fds);
-   // currentProcess->childrenCount++;
     if (priority >= PRIORITY_LEVELS){
         priority = PRIORITY_LEVELS-1;
     }
@@ -109,15 +110,15 @@ void killProcess(uint64_t pid){
     }
     removeForAllSemaphores(pid);
     Process * parent = findProcess(process->ppid);
-  /*  if (parent != NULL){
-       parent->childrenCount--;
-    }*/
-    if(process->pid == currentProcess->pid){
-        yield();
-    }
+
+    uint64_t killedPid = process->pid;
+    uint64_t currentPid = currentProcess->pid;
 
     usedPIDs[process->pid] = 0;
     freeProcess(process);
+    if(killedPid == currentPid){
+        yield();
+    }
 }
 
 void killCurrentProcess(){
@@ -152,7 +153,7 @@ void blockProcess(uint64_t pid){
     enum status oldStatus = process->status;
     process->status = Blocked;
     if (oldStatus == Running){
-        setProcessPriority(pid, PRIORITY_LEVELS - quantum + remainingQuantum);
+        setProcessPriority(pid, 1+PRIORITY_LEVELS - quantum);
         yield();
     }
 }
@@ -197,8 +198,8 @@ void schedulerInfo(){
             printInt((uint64_t)process->RSP);
             printString("; RBP: ");
             printInt((uint64_t)process->RBP);
-            /*printString(";fg: ");
-            printString(process->foreground ? "fg" : "bg");*/
+            printString(";fg: ");
+            printString(process->fd.input==STDIN? "fd" : "bg");*/
             printString("\n");
         }
     }
