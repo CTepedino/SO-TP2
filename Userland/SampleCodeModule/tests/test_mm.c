@@ -14,7 +14,7 @@ void test_mm(int argc, char ** argv) {
   uint32_t total;
   uint64_t max_memory;
 
-  if (argc != 0)
+  if (argc != 1)
     return;
 
   if ((max_memory = satoi(argv[0])) <= 0)
@@ -23,7 +23,6 @@ void test_mm(int argc, char ** argv) {
   while (1) {
     rq = 0;
     total = 0;
-
     // Request as many blocks as we can
     while (rq < MAX_BLOCKS && total < max_memory) {
       mm_rqs[rq].size = GetUniform(max_memory - total - 1) + 1;
