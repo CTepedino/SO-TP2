@@ -175,6 +175,10 @@ void schedulerInfo(){
     sys_schedulerInfo();
 }
 
+int getStatus(uint64_t pid){
+    return sys_getStatus(pid);
+}
+
 
 int semOpen(int id, unsigned int value){
     return sys_openSem(id, value);
@@ -219,26 +223,27 @@ int writePipe(int id, const char * string, uint64_t count){
 void wc(int argc, char *argv[]) {
   int lines = 0;
   char c;
-  while ((c = getChar()) != 0) {
+  while ((c = getChar()) != EOF ||  c==0) {
     if (c == '\n') {
       lines++;
     }
   }
-  print("Line count: ");
+  print("Lineas: ");
   printInt(lines);
   print("\n");
 }
 
 void cat(int argc, char *argv[]) {
   char c;
-  while ((c = getChar()) != 0)
-    putChar(c);
-  putChar('\n');
+  while ((c = getChar()) != EOF ||  c==0) {
+      putChar(c);
+  }
+  print("\n");
 }
 
 void filter(int argc, char *argv[]) {
   char c;
-  while ((c = getChar()) != 0) {
+  while ((c = getChar()) != EOF || c==0) {
     if (!isVowel(c)) {
       putChar(c);
     }

@@ -22,6 +22,8 @@ typedef struct timeStruct{
     uint32_t second;
 } timeStruct;
 
+enum status {Ready=0, Running, Blocked, WaitingForChildren};
+
 void putChar(char c);
 void print(const char* string);
 void colorPrint(const char * string);
@@ -66,6 +68,7 @@ void unblockProcess(uint64_t pid);
 void waitForChildren(uint64_t childPid);
 void yield();
 void schedulerInfo();
+int getStatus(uint64_t pid);
 
 
 int semOpen(int id, unsigned int value);

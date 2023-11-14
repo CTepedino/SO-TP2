@@ -38,6 +38,7 @@ GLOBAL sys_closePipe
 GLOBAL sys_readPipe
 GLOBAL sys_writePipe
 GLOBAL sys_openNewSem
+GLOBAL sys_getStatus
 
 section .text
 
@@ -166,3 +167,6 @@ sys_writePipe:
 
 sys_openNewSem:
     systemcall 34
+
+sys_getStatus:
+    systemcall 35

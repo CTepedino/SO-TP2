@@ -3,7 +3,7 @@
 uint64_t fRead(char * buffer, uint64_t length){
     int fd = getCurrentProcess()->fds.input;
     if (fd == STDIN){
-        read(buffer, length);
+        return read(buffer, length);
     } else if (fd > DEFAULT_FD_COUNT){
         return readPipe(fd, buffer, length);
     }
@@ -13,7 +13,7 @@ uint64_t fRead(char * buffer, uint64_t length){
 uint64_t fWrite(uint64_t color, const char * string, uint64_t count){
     int fd = getCurrentProcess()->fds.output;
     if (fd==STDOUT){
-        write(color, string, count);
+        return write(color, string, count);
     } else if (fd > DEFAULT_FD_COUNT){
         return writePipe(fd, string, count);
     }

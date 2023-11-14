@@ -39,6 +39,6 @@ int sys_createNewPipe();
 void sys_closePipe(int id);
 int sys_readPipe(int id, char * buffer, uint64_t length);
 int sys_writePipe(int id, const char * string,uint64_t count);
-
+int sys_getStatus(uint64_t pid);
 
 #endif

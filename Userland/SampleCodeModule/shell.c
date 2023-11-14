@@ -7,15 +7,15 @@ unsigned int scr_height;
 void processCommand(char * readbuf);
 int searchCommand(char * command);
 
-#define COMMAND_LIST_LENGTH 21
+#define COMMAND_LIST_LENGTH 16
 
 static Command commandList[] = {
         {"help", "Despliega una lista con los programas disponibles.", help},
-        {"time", "Imprime en pantalla la fecha y hora del sistema.", time},
-        {"dividebyzero", "Ejecuta un programa que divide por cero, causando una excepcion.", divideByZero},
-        {"invalidopcode", "Ejecuta un programa que intenta realizar una operacion invalida, causando una excepcion.", invalidOpCode},
-        {"regstatus", "Imprime en pantalla el ultimo estado de los registros guardado.", regStatus},
-        {"pong", "Abre el juego Pong. El paddle izquierdo se controla con \'W\' y \'S\'.El derecho con \'I\' y \'K\'.", pong},
+  //    {"time", "Imprime en pantalla la fecha y hora del sistema.", time},
+  //    {"dividebyzero", "Ejecuta un programa que divide por cero, causando una excepcion.", divideByZero},
+  //    {"invalidopcode", "Ejecuta un programa que intenta realizar una operacion invalida, causando una excepcion.", invalidOpCode},
+  //    {"regstatus", "Imprime en pantalla el ultimo estado de los registros guardado.", regStatus},
+  //    {"pong", "Abre el juego Pong. El paddle izquierdo se controla con \'W\' y \'S\'.El derecho con \'I\' y \'K\'.", pong},
         {"testmm", "(DEBUG)Test para memory manager", test_mm},
         {"testprocess", "(DEBUG)Test para procesos", test_processes},
         {"testprio", "(DEBUG)Test para prioridad de procesos", test_prio},
@@ -30,7 +30,7 @@ static Command commandList[] = {
         {"wc", "Cuenta la cantidad de lineas del input", wc},
         {"cat", "Imprime el stdin tal como lo recibe", cat},
         {"filter", "Filtra las vocales del input", filter},
-        {"phylo","Implementa el problema de los filósofos comensales", phylo}
+        {"phylo","Implementa el problema de los filosofos comensales", phylo}
 };
 
 
@@ -39,7 +39,7 @@ void shellStart(){
     textPosition(0, scr_height);
     colorPrint("Bienvenido!\n\n");
     println("Que modulo desea correr?\n");
-    //executeCommand(commandList[0], 0, NULL, 1);
+    executeCommand(commandList[0], 0, NULL, 1);
     println("\nPara correr los modulos, ingrese el comando correspondiente y presione enter.");
     while(1){
         colorPrint("$ ");
@@ -48,6 +48,23 @@ void shellStart(){
         processCommand(readbuf);
     }
 }
+
+void executeCommand(Command command, int argc, char ** argv, int foreground){
+    int fds[2];
+    uint64_t childPid;
+    if(foreground){
+        fds[0] = STDIN;
+        fds[1] = STDOUT;
+    } else {
+        fds[0] = STDIN;
+        fds[1] = -1;
+    }
+    childPid = execve(command.function, command.name, argc, argv, 0, fds);
+    if(foreground){
+        waitForChildren(childPid);
+    }
+}
+
 
 void processCommand(char * readbuf){
     char cmd1[MAX_NAME_LENGTH];
@@ -172,10 +189,8 @@ int searchCommand(char * command){
 
 void help(){
     int spaces;
-    char buffer[MAX_NAME_LENGTH];
     for(int i=0; i< COMMAND_LIST_LENGTH; i++){
-        toUpper(buffer, commandList[i].name);
-        colorPrint(buffer);
+        colorPrint(commandList[i].name);
         spaces = MAX_NAME_LENGTH - strlen(commandList[i].name);
         for(int i = 0; i<spaces; i++){
             putChar(' ');
@@ -257,21 +272,30 @@ void regStatus(){
 
 void killShell(int argc, char ** argv){
     if (argc != 1){
-        print("Usage: kill <pid>");
+        println("Uso: kill <pid>");
+        return;
     }
     kill(my_atoi(argv[0]));
 }
 
 void nice(int argc, char ** argv){
     if(argc != 2){
-        print("Usage: nice <pid> <priority>");
+        println("Uso: nice <pid> <priority>");
+        return;
     }
     setPriority(my_atoi(argv[0]), my_atoi(argv[1]));
 }
 
 void block(int argc, char ** argv){
     if (argc != 1){
-        print("Usage: kill <pid>");
+        println("Uso: block <pid>");
+        return;
     }
-    blockProcess(my_atoi(argv[0]));
+    uint64_t pid =my_atoi(argv[0]);
+    if (getStatus(pid)!=Blocked){
+        println("block");
+        blockProcess(pid);
+    } else {
+        unblockProcess(pid);
+    }
 }

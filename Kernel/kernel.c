@@ -59,6 +59,7 @@ void * getSampleCodeModuleAddress(){
 void writeMatrix(uint32_t x, uint32_t y, uint32_t width, uint32_t height,const char matrix[height][width]);
 
 
+
 int main(){
 
     initializeMemoryManager(HEAP_BASE_ADDRESS, HEAP_SIZE);
@@ -67,7 +68,6 @@ int main(){
 
 
 	int fds[2] = {STDIN,STDOUT};
-
     addProcess((EntryPoint)sampleCodeModuleAddress, "shell", 0, NULL, 0, fds);
 
     load_idt();

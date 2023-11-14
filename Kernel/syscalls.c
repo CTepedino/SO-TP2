@@ -54,13 +54,15 @@ static int sys_closePipe(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx,
 static int sys_readPipe(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 static int sys_writePipe(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 
+static int sys_getStatus(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 
 static int (*syscalls[])(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9) = {
         sys_read,  sys_screenInfo, sys_textPosition, sys_getAllKeys, sys_getReleasedKeys, sys_write,sys_putRectangle,
         sys_putCircle ,sys_beep,sys_sleep, sys_getRTC, sys_getREGS, sys_malloc, sys_free, sys_memoryInfo,
         sys_addProcess, sys_killProcess, sys_killCurrentProcess, sys_getCurrentPid, sys_setProcessPriority,
          sys_blockProcess, sys_unblockProcess, sys_waitForChildren, sys_yield, sys_schedulerInfo, sys_openSem, sys_closeSem,
-        sys_postSem, sys_waitSem, sys_openPipe, sys_createNewPipe, sys_closePipe, sys_readPipe, sys_writePipe, sys_openNewSem
+        sys_postSem, sys_waitSem, sys_openPipe, sys_createNewPipe, sys_closePipe, sys_readPipe, sys_writePipe, sys_openNewSem,
+        sys_getStatus,
 };
 
 int syscallDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9, uint64_t rax){
@@ -240,3 +242,6 @@ static int sys_writePipe(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx,
     return writePipe(rdi, (char *) rsi, rdx);
 }
 
+static int sys_getStatus(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9){
+    return getStatus(rdi);
+}

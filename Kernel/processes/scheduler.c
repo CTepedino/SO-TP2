@@ -54,10 +54,9 @@ void * contextSwitch(void * RSP){
 
             if (currentProcess->status == Ready){
                 foundNext = 1;
-                remove(queues[i], currentProcess->pid);
-                quantum = PRIORITY_LEVELS - i;
+                setProcessPriority(currentProcess->pid, i+1);
+                quantum = (PRIORITY_LEVELS - i);
                 remainingQuantum = quantum;
-                enqueue(queues[i], currentProcess);
                 break;
             }
         }
@@ -152,7 +151,7 @@ void blockProcess(uint64_t pid){
     enum status oldStatus = process->status;
     process->status = Blocked;
     if (oldStatus == Running){
-        setProcessPriority(pid, 1+PRIORITY_LEVELS - quantum);
+        //setProcessPriority(pid, 1+PRIORITY_LEVELS - quantum);
         yield();
     }
 }
@@ -197,7 +196,7 @@ void schedulerInfo(){
             printInt((uint64_t)process->RSP);
             printString("; RBP: ");
             printInt((uint64_t)process->RBP);
-            printString(";fg: ");
+            printString("; fg: ");
             printString(process->fds.input==STDIN? "fd" : "bg");
             printString("\n");
         }
@@ -227,3 +226,10 @@ Process * getCurrentProcess(){
     return currentProcess;
 }
 
+int getStatus(uint64_t pid){
+    Process * p = findProcess(pid);
+    if (p!=NULL){
+        return p->status;
+    }
+    return -1;
+}

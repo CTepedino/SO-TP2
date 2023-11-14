@@ -28,6 +28,7 @@ void blockProcess(uint64_t pid);
 void unblockProcess(uint64_t pid);
 void waitForChildren(uint64_t childPid);
 void yield();
+int getStatus(uint64_t pid);
 
 void schedulerInfo();
 #endif
