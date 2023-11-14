@@ -3,11 +3,12 @@
 
 typedef struct Pipe {
     char buffer[PIPE_BUFFER_SIZE];
-    uint16_t rIndex;
-    uint16_t wIndex;
+    uint16_t first;
+    uint16_t size;
     uint64_t inputPid;
     uint64_t outputPid;
-    int block;
+    int semWrite;
+    int semRead;
 } Pipe;
 
 Pipe * pipes[MAX_PIPE_COUNT];
@@ -23,12 +24,18 @@ int findPipe(int id){
 int createNewPipe(){
     for(int i = 0; i < MAX_PIPE_COUNT; i++){
         if (pipes[i]==NULL){
+            int semWrite = openNewSem(PIPE_BUFFER_SIZE);
+            int semRead = openNewSem(0);
+            if (semWrite==-1 || semRead==-1){
+                return -1;
+            }
             pipes[i] = memAlloc(sizeof(Pipe));
-            pipes[i]->rIndex = 0;
-            pipes[i]->wIndex = 0;
+            pipes[i]->first = 0;
+            pipes[i]->size = 0;
             pipes[i]->inputPid = 0;
             pipes[i]->outputPid = 0;
-            pipes[i]->block=0;
+            pipes[i]->semWrite = semWrite;
+            pipes[i]->semRead = semRead;
             for(int j = 0; j < MAX_PIPE_COUNT; j++){
                 pipes[i]->buffer[j]=0;
             }
@@ -44,12 +51,18 @@ int openPipe(int64_t pid, int id, uint8_t mode){
         return -1;
     }
     if (pipes[idx]==NULL){
+        int semWrite = openNewSem(PIPE_BUFFER_SIZE);
+        int semRead = openNewSem(0);
+        if (semWrite==-1 || semRead==-1){
+            return -1;
+        }
         pipes[idx] = memAlloc(sizeof(Pipe));
-        pipes[idx]->rIndex = 0;
-        pipes[idx]->wIndex = 0;
+        pipes[idx]->first = 0;
+        pipes[idx]->size = 0;
         pipes[idx]->inputPid = 0;
         pipes[idx]->outputPid = 0;
-        pipes[idx]->block=0;
+        pipes[idx]->semWrite = semWrite;
+        pipes[idx]->semRead = semRead;
         for(int i = 0; i < MAX_PIPE_COUNT; i++){
             pipes[idx]->buffer[i]=0;
         }
@@ -70,12 +83,17 @@ void closePipe(int64_t pid, int id){
         return;
     }
     if (pid == pipes[idx]->inputPid){
-        char eof[] = {EOF};
-        writePipe(id, eof, 1);
+        pipes[idx]->inputPid = 0;
     } else if (pid == pipes[idx]->outputPid){
+        pipes[idx]->outputPid = 0;
+    }
+    if (pipes[idx]->outputPid == 0 && pipes[idx]->inputPid == 0){
+        closeSem(pipes[idx]->semWrite);
+        closeSem(pipes[idx]->semRead);
         memFree(pipes[idx]);
         pipes[idx]=NULL;
     }
+
 }
 
 int readPipe(int id, char * buffer, uint64_t length){
@@ -83,27 +101,20 @@ int readPipe(int id, char * buffer, uint64_t length){
     if (length==0 || idx==-1 || pipes[idx]==NULL || pipes[idx]->outputPid != getCurrentPid()) {
         return 0;
     }
+    uint8_t eofFound = 0;
     uint64_t readCount = 0;
-    uint8_t end = 0;
-    while(!end && readCount < length){
-       if (pipes[idx]->rIndex==pipes[idx]->wIndex && (int)pipes[idx]->buffer[pipes[idx]->rIndex] != EOF){
-           pipes[idx]->block = 1;
-           blockProcess(pipes[idx]->outputPid);
-       }
-        while (readCount < length && (pipes[idx]->wIndex != pipes[idx]->rIndex || (int) pipes[idx]->buffer[pipes[idx]->rIndex] == EOF)) {
-            buffer[readCount] = pipes[idx]->buffer[pipes[idx]->rIndex];
-            if ((int) buffer[readCount] == EOF) {
-                end = 1;
+    while(readCount < length && !eofFound){
+        waitSem(pipes[idx]->semRead);
+        while(readCount < length && (pipes[idx]->size > 0 || (int) pipes[idx]->buffer[pipes[idx]->first]==EOF)){
+            buffer[readCount] = pipes[idx]->buffer[pipes[idx]->first];
+            if ((int) buffer[readCount++]==EOF){
+                eofFound=1;
                 break;
             }
-            readCount++;
-            pipes[idx]->rIndex++;
-            pipes[idx]->rIndex = pipes[idx]->rIndex % PIPE_BUFFER_SIZE;
+            pipes[idx]->size--;
+            pipes[idx]->first = (pipes[idx]->first+1)%PIPE_BUFFER_SIZE;
         }
-        if (pipes[idx]->block){
-            unblockProcess(pipes[idx]->inputPid);
-            pipes[idx]->block=0;
-        }
+        postSem(pipes[idx]->semWrite);
     }
     return readCount;
 }
@@ -114,29 +125,16 @@ int writePipe(int id, const char * string, uint64_t count){
         return 0;
     }
     uint64_t writeCount = 0;
-    while(writeCount < count && pipes[idx]->buffer[pipes[idx]->wIndex]!=EOF){
-        if(pipes[idx]->rIndex == pipes[idx]->wIndex){
-            pipes[idx]->block=1;
-            blockProcess(pipes[idx]->inputPid);
-        }
-        if(pipes[idx]==NULL){
-            break;
-        }
-        while(pipes[idx]->wIndex != pipes[idx]->rIndex && writeCount < count){
-            pipes[idx]->buffer[pipes[idx]->wIndex] = string[writeCount];
-            if ((int)string[writeCount]==EOF){
+    while(pipes[idx]!=NULL && writeCount < count && (int)pipes[idx]->buffer[(pipes[idx]->first+pipes[idx]->size)%PIPE_BUFFER_SIZE]!=EOF){
+        waitSem(pipes[idx]->semWrite);
+        while(pipes[idx]->size < PIPE_BUFFER_SIZE && writeCount < count){
+            pipes[idx]->buffer[(pipes[idx]->first+pipes[idx]->size)%PIPE_BUFFER_SIZE] = string[writeCount];
+            if ((int)string[writeCount++]==EOF){
                 break;
             }
-            writeCount++;
-            pipes[idx]->wIndex++;
-            pipes[idx]->wIndex = pipes[idx]->wIndex % PIPE_BUFFER_SIZE;
+            pipes[idx]->size++;
         }
-        if (pipes[idx]->block){
-            unblockProcess(pipes[idx]->outputPid);
-            pipes[idx]->block=0;
-        }
-
+        postSem(pipes[idx]->semRead);
     }
     return writeCount;
-
 }

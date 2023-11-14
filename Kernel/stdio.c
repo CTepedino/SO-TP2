@@ -4,7 +4,7 @@ uint64_t fRead(char * buffer, uint64_t length){
     int fd = getCurrentProcess()->fds.input;
     if (fd == STDIN){
         return read(buffer, length);
-    } else if (fd > DEFAULT_FD_COUNT){
+    } else if (fd >= DEFAULT_FD_COUNT){
         return readPipe(fd, buffer, length);
     }
     return 0;
@@ -14,7 +14,7 @@ uint64_t fWrite(uint64_t color, const char * string, uint64_t count){
     int fd = getCurrentProcess()->fds.output;
     if (fd==STDOUT){
         return write(color, string, count);
-    } else if (fd > DEFAULT_FD_COUNT){
+    } else if (fd >= DEFAULT_FD_COUNT){
         return writePipe(fd, string, count);
     }
     return 0;
