@@ -1,6 +1,6 @@
 #include <test_util.h>
 
-#define SEM_ID 10
+#define SEM_ID 42
 #define TOTAL_PAIR_PROCESSES 2
 
 int64_t global; // shared memory
@@ -11,7 +11,6 @@ void slowInc(int64_t *p, int64_t inc) {
   aux += inc;
   *p = aux;
 }
-
 
 
 void my_process_inc(int argc, char *argv[]) {
@@ -56,6 +55,7 @@ void test_sync(int argc, char ** argv) { //{n, use_sem, 0}
   if (argc != 2)
     return;
 
+
   char *argvDec[] = {argv[0], "-1", argv[1], NULL};
   char *argvInc[] = {argv[0], "1", argv[1], NULL};
   int fds[2] = {STDIN, STDOUT};
@@ -65,7 +65,8 @@ void test_sync(int argc, char ** argv) { //{n, use_sem, 0}
   uint64_t i;
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
     pids[i] = execve(&my_process_inc, "my_process_inc", 3, argvDec, 0, fds);
-    pids[i + TOTAL_PAIR_PROCESSES] = execve(&my_process_inc, "my_process_inc", 3, argvInc, 0, fds);
+    pids[i + TOTAL_PAIR_PROCESSES] = execve(&my_process_inc, "my_process_inc", 3, argvInc,0, fds);
+
   }
 
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
