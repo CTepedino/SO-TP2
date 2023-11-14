@@ -43,8 +43,8 @@ void my_process_inc(int argc, char *argv[]) {
       semPost(SEM_ID);
   }
 
-  if (use_sem)
-    semClose(SEM_ID);
+ /* if (use_sem)
+    semClose(SEM_ID);*/
 
   return;
 }
@@ -54,8 +54,7 @@ void test_sync(int argc, char ** argv) { //{n, use_sem, 0}
 
   if (argc != 2)
     return;
-
-
+  int use_sem = satoi(argv[1]);
   char *argvDec[] = {argv[0], "-1", argv[1], NULL};
   char *argvInc[] = {argv[0], "1", argv[1], NULL};
   int fds[2] = {STDIN, STDOUT};
@@ -72,6 +71,9 @@ void test_sync(int argc, char ** argv) { //{n, use_sem, 0}
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
     waitForChildren(pids[i]);
     waitForChildren(pids[i + TOTAL_PAIR_PROCESSES]);
+  }
+  if (use_sem) {
+      semClose(SEM_ID);
   }
 
   print("Final value: ");
