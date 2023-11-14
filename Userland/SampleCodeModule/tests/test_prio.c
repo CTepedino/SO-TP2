@@ -10,6 +10,15 @@
 
 int64_t prio[TOTAL_PROCESSES] = {LOWEST, MEDIUM, HIGHEST};
 
+void endless_loop_print_prio() {
+    int64_t pid = getPid();
+
+    while (1) {
+        printInt(pid);
+        bussy_wait(10000);
+    }
+}
+
 void test_prio() {
   int64_t pids[TOTAL_PROCESSES];
   char *argv[] = {0};
@@ -17,8 +26,7 @@ void test_prio() {
   uint64_t i;
 
   for (i = 0; i < TOTAL_PROCESSES; i++){
-    execve(&endless_loop_print, "endless_loop_print" , 1, (char**) argv, LOWEST, fds);
-    pids[i] = getPid();
+    pids[i] = execve(&endless_loop_print_prio, "endless_loop_print" , 1, (char**) argv, LOWEST, fds);
   }
 
   bussy_wait(WAIT);
