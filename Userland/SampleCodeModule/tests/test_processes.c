@@ -9,16 +9,26 @@ typedef struct P_rq {
   enum State state;
 } p_rq;
 
+void endless_loop_print_aux() {
+    int64_t pid = getPid();
+
+    while (1) {
+        printInt(pid);
+        bussy_wait(10000);
+    }
+}
+
 void test_processes(int argc, char **argv) {
   uint8_t rq;
   uint8_t alive = 0;
   uint8_t action;
   uint64_t max_processes;
+
   char *argvAux[] = {0};
   int fds[2] = {STDIN, STDOUT};
 
   if (argc != 1){
-    print("Usage: testprocesses <max_processes>\n");
+    print("Uso: testprocesses <max_processes>\n");
     return;
   }
 
@@ -31,7 +41,7 @@ void test_processes(int argc, char **argv) {
 
     // Create max_processes processes
     for (rq = 0; rq < max_processes; rq++) {
-      execve(endless_loop_print, "endless_loop_print", 1, (char**) argvAux, 0, fds);
+      execve(&endless_loop_print_aux, "endless_loop_print", 1, (char**) argvAux, 10, fds);
       p_rqs[rq].pid = getPid();
 
       if (p_rqs[rq].pid == 0) {
